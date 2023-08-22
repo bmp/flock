@@ -139,6 +139,58 @@ a:hover {
   background-color: #4c7db6;
 }
 
+/* Style for the dropdown menu */
+select {
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #81a1c1;
+  background-color: #4c566a;
+  color: #eceff4;
+  border-radius: 5px;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  cursor: pointer;
+}
+
+/* Style for the dropdown arrow */
+select::after {
+  content: " \u25bc";
+}
+
+/* Style for the dropdown options */
+select option {
+  background-color: #4c566a;
+  color: #eceff4;
+}
+
+
+/* Style for date input field */
+input[type="date"] {
+  background-color: #4c566a;
+  color: #eceff4;
+  border: none;
+  border-bottom: 2px solid #81a1c1;
+  padding: 10px;
+  font-size: 16px;
+  width: 95%;
+  transition: border-bottom-color 0.3s ease-in-out;
+  margin-bottom: 20px;
+}
+
+input[type="date"]:focus {
+  border-bottom-color: #5e81ac;
+  outline: none;
+}
+
+/* Style for date picker */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
+
+/* ... (rest of your CSS) ... */
+
+
 @media (max-width: 768px) {
   .container {
     padding: 10px;

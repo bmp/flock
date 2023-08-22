@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"strings"
+	"time"	
 
 	"reflect"	
 
@@ -49,27 +50,31 @@ func fetchDataFromDB(query string) (columns []string, pens []map[string]interfac
 
 	columns, _ = rows.Columns()
 
-	for rows.Next() {
-		values := make([]interface{}, len(columns))
-		scanArgs := make([]interface{}, len(columns))
-		for i := range values {
-			var v interface{}
-			scanArgs[i] = &v
-			values[i] = &v
-		}
-		if err := rows.Scan(scanArgs...); err != nil {
-			return nil, nil, err
-		}
+    for rows.Next() {
+        values := make([]interface{}, len(columns))
+        scanArgs := make([]interface{}, len(columns))
+        for i := range values {
+            var v interface{}
+            scanArgs[i] = &v
+            values[i] = &v
+        }
+        if err := rows.Scan(scanArgs...); err != nil {
+            return nil, nil, err
+        }
 
-		retrievedPen := make(map[string]interface{})
-		for i, colName := range columns {
-			retrievedPen[colName] = reflect.ValueOf(values[i]).Elem().Interface()
-		}
+        retrievedPen := make(map[string]interface{})
+        for i, colName := range columns {
+            if colName == "id" {
+                retrievedPen[colName] = reflect.ValueOf(values[i]).Elem().Interface().(int64) // Cast to int64
+            } else {
+                retrievedPen[colName] = reflect.ValueOf(values[i]).Elem().Interface()
+            }
+        }
 
-		pens = append(pens, retrievedPen)
-	}
+        pens = append(pens, retrievedPen)
+    }
 
-	return columns, pens, nil
+    return columns, pens, nil
 }
 
 func listPens(w http.ResponseWriter, r *http.Request) {
@@ -118,9 +123,14 @@ func addPen(w http.ResponseWriter, r *http.Request) {
 	columns := getColumnNames("pens") // Fetch column names dynamically
 	data := struct {
 		Columns []string
+		CurrentYear int
 	}{
 		Columns: columns[1:], // Exclude "id"
+		CurrentYear: time.Now().Year(),  
+
 	}
+
+	//log.Printf("Debug: CurrentYear = %d\n", data.CurrentYear)
 
 	tmpl := template.Must(template.ParseFiles("templates/add.html"))
 	tmpl.Execute(w, data)

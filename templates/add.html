@@ -14,16 +14,34 @@
       <a href="/">Back to Main</a>
     </header>
     <div class="form-container">
-    <form action="/add" method="post">
-        {{ range $col := .Columns }}
-        <div>
-            <label for="{{ $col }}">{{ $col }}</label>
-            <input type="text" id="{{ $col }}" name="{{ $col }}" required>
-        </div>
+      <form method="POST">
+        {{ range .Columns }}
+        <label for="{{ . }}">{{ . }}</label>
+        {{ if eq . "year" }}
+        <input type="date" name="year" id="year" min="1900-01-01" max="{{ $.CurrentYear }}-12-31">
+        {{ else if eq . "nib_size" }}
+        <select name="{{ . }}" id="{{ . }}">
+          <option value="UEF">UEF</option>
+          <option value="EF">EF</option>
+          <option value="F">F</option>
+          <option value="M">M</option>
+          <option value="B">B</option>
+          <option value="BB">BB</option>
+          <option value="BBB">BBB</option>
+          <option value="Music">Music</option>
+          <option value="Architect">Architect</option>
+          <option value="Italic">Italic</option>
+        </select>
+        {{ else }}
+        <input type="text" name="{{ . }}" id="{{ . }}">
+        {{ end }}
         {{ end }}
         <button type="submit">Add Pen</button>
-    </form>
+      </form>
+
     </div>
   </div>
+
+  <script src="/includes/datepicker.js"></script>
 </body>
 </html>
