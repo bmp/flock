@@ -11,15 +11,18 @@
   <div class="container">
     <header>
       <h1>Add Fountain Pen</h1>
-      <a href="/">Back to Main</a>
+
     </header>
+    <div style="text-align:center;margin-top:25px;">
+      <a href="/">Back to Main</a>
+    </div>
     <div class="form-container">
       <form method="POST">
         {{ range .Columns }}
         <label for="{{ . }}">{{ . }}</label>
-        {{ if eq . "year" }}
+        {{ if eq . "Year" }}
         <input type="date" name="year" id="year" min="1900-01-01" max="{{ $.CurrentYear }}-12-31">
-        {{ else if eq . "nib_size" }}
+        {{ else if eq . "Nib Size" }}
         <select name="{{ . }}" id="{{ . }}">
           <option value="UEF">UEF</option>
           <option value="EF">EF</option>
@@ -36,7 +39,9 @@
         <input type="text" name="{{ . }}" id="{{ . }}">
         {{ end }}
         {{ end }}
-        <button type="submit">Add Pen</button>
+        <div class="add-button-container">
+          <button type="submit" class="add-button">Add Pen</button>
+        </div>
       </form>
 
     </div>

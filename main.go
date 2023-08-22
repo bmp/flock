@@ -154,7 +154,8 @@ func getColumnNames(tableName string) []string {
 		if err != nil {
 			log.Fatal(err)
 		}
-		columns = append(columns, name)
+		displayName := strings.Title(strings.ReplaceAll(name, "_", " "))
+		columns = append(columns, displayName)
 	}
 
 	return columns
