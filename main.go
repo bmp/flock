@@ -100,16 +100,30 @@ func listPens(w http.ResponseWriter, r *http.Request) {
 func addPen(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost {
 		r.ParseForm()
+		
+		//log.Printf("Form Values: %+v\n", r.Form)
+
 		columns := getColumnNames("pens") // Fetch column names dynamically
 		// Remove "id" from column names and values
 		columns = columns[1:]
 		columnValues := make([]interface{}, len(columns))
+
 		for i, col := range columns {
-			columnValues[i] = r.FormValue(col)
+   			 columnValues[i] = strings.TrimSpace(r.FormValue(col))
+		}
+		
+		valuePlaceholders := make([]string, len(columns))
+
+		for i, col := range columns {
+			formValue := r.FormValue(col)
+			columnValues[i] = formValue
+			valuePlaceholders[i] = "?"
 		}
 
-		query := "INSERT INTO pens (" + strings.Join(columns, ", ") + ") VALUES (" +
-			strings.Join(strings.Split(strings.Repeat("?", len(columns)), ""), ", ") + ")"
+		query := "INSERT INTO pens (" + strings.Join(columns, ", ") + ") VALUES (" + strings.Join(valuePlaceholders, ", ") + ")"
+
+		//log.Printf("Query: %s\n", query)
+		//log.Printf("Values: %v\n", columnValues)
 
 		_, err := db.Exec(query, columnValues...)
 		if err != nil {
@@ -125,7 +139,7 @@ func addPen(w http.ResponseWriter, r *http.Request) {
 		Columns []string
 		CurrentYear int
 	}{
-		Columns: columns[1:], // Exclude "id"
+		Columns:  columns[1:], // Exclude "id"
 		CurrentYear: time.Now().Year(),  
 
 	}
