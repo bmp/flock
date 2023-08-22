@@ -1,0 +1,64 @@
+#+TITLE: Flock: Personal Fountain Pen Database
+#+AUTHOR: Bharath M. Palavalli
+#+EMAIL: bmp@sdf.org
+
+This Fountain Pen inventory is called Flock and has been created with the help of LLMs
+
+* Technology stack
+** Go
+** SQLite 3
+* Features
+** List Pens
+** Add Pens
+** Hard Coded Pen characteristics
+** Hard coded Nord theme
+** The SQLite database is created as follows,
+
+#+begin_src
+CREATE TABLE pens (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT,
+    maker TEXT,
+    color TEXT,
+    material TEXT,
+    nib_size TEXT,
+    nib_color TEXT,
+    filling_system TEXT,
+    trims TEXT,
+    year INTEGER,
+    price REAL,
+    misc TEXT
+);
+#+end_src
+** Sorting by columns is supported
+** Folder structure is as follows,
+
+├── Readme.org
+├── database.db
+├── includes
+│   ├── datepicker.js
+│   └── sort.js
+├── main.go
+├── static
+│   └── styles.css
+└── templates
+    ├── add.html
+    └── index.html
+** Following modules are needed
+#+begin_src
+go get github.com/mattn/go-sqlite3
+#+end_src
+* To run the code
+
+#+begin_src
+go main.go
+#+end_src
+* TODO
+** Add pagination
+** Fetch nib types from database
+** Fetch filling system from database
+** Fetch material from database
+** Convert date to Indian format
+** Create user logins and consolidated database for people to search
+** Search for your own pen
+** Comment code and add logs for every action

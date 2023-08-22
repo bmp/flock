@@ -5,13 +5,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="/static/styles.css">
-  <title>Add Fountain Pen</title>
+  <title>Flock: Personal Fountain Pen Database</title>
 </head>
 <body>
   <div class="container">
     <header>
-      <h1>Add Fountain Pen</h1>
-
+      <h1>Flock: Personal Fountain Pen Database</h1>
+      <h2>Add your pen</he>
     </header>
     <div style="text-align:center;margin-top:25px;">
       <a href="/">Back to Main</a>
@@ -34,6 +34,27 @@
           <option value="Music">Music</option>
           <option value="Architect">Architect</option>
           <option value="Italic">Italic</option>
+        </select>
+        {{ else if eq . "material" }}
+        <select name="{{ . }}" id="{{ . }}">
+          <option value="Wood">Wood</option>
+          <option value="Ebonite">Ebonite</option>
+          <option value="Resin">Resin</option>
+          <option value="Metal">Metal</option>
+          <option value="Lacquer">Lacquer</option>
+          <option value="Wood encased Ebonite">Wood encased Ebonite</option>
+          <option value="Delrin">Delrin</option>
+          <option value="Rubber">Rubber</option>
+          <option value="Acrylic">Acrylic</option>
+        </select>
+        {{ else if eq . "filling_system" }}
+        <select name="{{ . }}" id="{{ . }}">
+          <option value="Cartridge">Cartridge</option>
+          <option value="Converter">Converter</option>
+          <option value="Eyedropper">Eyedropper</option>
+          <option value="Piston">Piston</option>
+          <option value="Sac/AeroMatic">Sac/AeroMatic</option>
+          <option value="Vacuum">Vacuum</option>
         </select>
         {{ else }}
         <input type="text" name="{{ . }}" id="{{ . }}">
