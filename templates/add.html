@@ -20,9 +20,9 @@
       <form method="POST">
         {{ range .Columns }}
         <label for="{{ . }}">{{ . }}</label>
-        {{ if eq . "Year" }}
+        {{ if eq . "year" }}
         <input type="date" name="year" id="year" min="1900-01-01" max="{{ $.CurrentYear }}-12-31">
-        {{ else if eq . "Nib Size" }}
+        {{ else if eq . "nib_size" }}
         <select name="{{ . }}" id="{{ . }}">
           <option value="UEF">UEF</option>
           <option value="EF">EF</option>
