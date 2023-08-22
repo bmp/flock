@@ -1,0 +1,29 @@
+<!-- templates/add.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/static/styles.css">
+  <title>Add Fountain Pen</title>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Add Fountain Pen</h1>
+      <a href="/">Back to Main</a>
+    </header>
+    <div class="form-container">
+    <form action="/add" method="post">
+        {{ range $col := .Columns }}
+        <div>
+            <label for="{{ $col }}">{{ $col }}</label>
+            <input type="text" id="{{ $col }}" name="{{ $col }}" required>
+        </div>
+        {{ end }}
+        <button type="submit">Add Pen</button>
+    </form>
+    </div>
+  </div>
+</body>
+</html>
