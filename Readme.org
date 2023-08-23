@@ -4,6 +4,17 @@
 
 This Fountain Pen inventory is called Flock and has been created with the help of LLMs
 
+#+ATTR_ORG: :width 100px
+#+ATTR_HTML: :width 100px
+#+CAPTION: Screenshot of listing of pens
+[[file:screenshots/listpens.png]]
+
+#+ATTR_ORG: :width 100px
+#+ATTR_HTML: :width 100px
+#+CAPTION: Screenshot of adding a pen to the database
+[[file:./screenshots/addpen.png]]
+
+
 * Technology stack
 ** Go
 ** SQLite 3
