@@ -51,27 +51,17 @@ CREATE TABLE pens (
 
 - Sorting by columns is supported
 - Folder structure is as follows,
-├── Readme.org
-
-├── database.db
-
-├── includes
-
-│   ├── datepicker.js
-
-│   └── sort.js
-
-├── main.go
-
-├── static
-
-│   └── styles.css
-
-└── templates
-
-├── add.html
-
-└── index.html
+     ├── Readme.org
+     ├── database.db
+     ├── includes
+     │      ├── datepicker.js
+     │      └── sort.js
+     ├── main.go
+     ├── static
+     │      └── styles.css
+     └── templates
+             ├── add.html
+             └── index.html
 
 - Following modules are needed
 
