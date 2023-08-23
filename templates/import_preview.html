@@ -1,0 +1,64 @@
+<!-- templates/import_preview.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/styles.css">
+    <title>Flock: Personal Fountain Pen Database</title>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>Flock: Personal Fountain Pen Database</h1>
+        <h2>Imported Data Preview</h2>
+      </header>
+      <div style="text-align:center;margin-top:25px;">
+        <a href="/import/csv" class="back-button">Back to Import</a>
+
+
+      </div>
+      <h2>CSV Import Preview</h2>
+
+
+      <div class="imported-table-container">
+        <table>
+          <thead>
+            <script>
+              var columns = {{ .Columns }};
+              document.write("<tr>");
+              for (var i = 0; i < columns.length; i++) {
+                  document.write("<th>" + columns[i] + "</th>");
+              }
+              document.write("</tr>");
+                                    </script>
+
+
+          </thead>
+          <tbody>
+            <script>
+              var csvData = {{ .CsvData }};
+              for (var i = 0; i < csvData.length; i++) {
+                  var row = csvData[i];
+                  document.write("<tr>");
+                  for (var j = 0; j < row.length; j++) {
+                      document.write("<td>" + row[j] + "</td>");
+                  }
+                  document.write("</tr>");
+              }
+              </script>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="text-align:center;margin-top:25px;">
+        <form method="POST" action="/import/approve">
+          <input type="hidden" name="csvData" value="{{ .CsvData }}">
+          <input type="hidden" name="columns" value="{{ .Columns }}">
+          <button type="submit" class="add-button">Approve and Add to Database</button>
+        </form>
+
+      </div>
+    </div>
+  </body>
+</html>

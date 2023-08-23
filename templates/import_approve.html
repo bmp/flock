@@ -1,0 +1,41 @@
+<!-- templates/import_approve.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/static/styles.css">
+  <title>Flock: Personal Fountain Pen Database</title>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Flock: Personal Fountain Pen Database</h1>
+      <h2>Approve Imported Data</h2>
+    </header>
+    <div style="text-align:center;margin-top:25px;">
+      <a href="/" class="back-button">Back to Main</a>
+      <form method="POST">
+        <input type="hidden" name="csvData" value="{{ toJson . }}">
+        <button type="submit" class="approve-button">Approve and Add to Database</button>
+      </form>
+    </div>
+    <div class="imported-table-container">
+      <table>
+        <tr>
+          {{ range .Columns }}
+          <th>{{ . }}</th>
+          {{ end }}
+        </tr>
+        {{ range .Rows }}
+        <tr>
+          {{ range . }}
+          <td>{{ . }}</td>
+          {{ end }}
+        </tr>
+        {{ end }}
+      </table>
+    </div>
+  </div>
+</body>
+</html>
