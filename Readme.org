@@ -2,8 +2,13 @@
 #+AUTHOR: Bharath M. Palavalli
 #+EMAIL: bmp@sdf.org
 
+* Description
+
 This Fountain Pen inventory is called Flock and has been created with the help of LLMs
 
+/Please note that this project uses Readme.org instead of Readme.md, some functionality might break on Codeberg when viewing the readme./
+
+** Screenshots
 #+ATTR_ORG: :width 100px
 #+ATTR_HTML: :width 100px
 #+CAPTION: Screenshot of listing of pens
@@ -16,14 +21,15 @@ This Fountain Pen inventory is called Flock and has been created with the help o
 
 
 * Technology stack
-** Go
-** SQLite 3
+Currently using
+- Go
+- SQLite 3
 * Features
-** List Pens
-** Add Pens
-** Hard Coded Pen characteristics
-** Hard coded Nord theme
-** The SQLite database is created as follows,
+- List Pens
+- Add Pens
+- Hard Coded Pen characteristics
+- Hard coded Nord theme
+- The SQLite database is created as follows,
 
 #+begin_src
 CREATE TABLE pens (
@@ -41,35 +47,50 @@ CREATE TABLE pens (
     misc TEXT
 );
 #+end_src
-** Sorting by columns is supported
-** Folder structure is as follows,
 
+
+- Sorting by columns is supported
+- Folder structure is as follows,
 ├── Readme.org
+
 ├── database.db
+
 ├── includes
+
 │   ├── datepicker.js
+
 │   └── sort.js
+
 ├── main.go
+
 ├── static
+
 │   └── styles.css
+
 └── templates
-    ├── add.html
-    └── index.html
-** Following modules are needed
+
+├── add.html
+
+└── index.html
+
+- Following modules are needed
+
 #+begin_src
 go get github.com/mattn/go-sqlite3
 #+end_src
+
 * To run the code
 
 #+begin_src
 go main.go
 #+end_src
+
 * TODO
-** Add pagination
-** Fetch nib types from database
-** Fetch filling system from database
-** Fetch material from database
-** Convert date to Indian format
-** Create user logins and consolidated database for people to search
-** Search for your own pen
-** Comment code and add logs for every action
+- Add pagination
+- Fetch nib types from database
+- Fetch filling system from database
+- Fetch material from database
+- Convert date to Indian format
+- Create user logins and consolidated database for people to search
+- Search for your own pen
+- Comment code and add logs for every action
