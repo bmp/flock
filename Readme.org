@@ -51,7 +51,6 @@ CREATE TABLE pens (
 
 - Sorting by columns is supported
 - Folder structure is as follows,
-
 ├── Readme.org
 ├── database.db
 ├── includes
