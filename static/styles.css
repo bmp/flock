@@ -191,6 +191,28 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   filter: invert(1);
 }
 
+code {
+  background-color: #434c5e; /* Background color */
+  color: #81a1c1; /* Text color */
+  padding: 3px 6px; /* Padding around the code */
+  border-radius: 3px; /* Rounded corners */
+  font-size: 14px; /* Font size */
+  font-family: "Courier New", monospace; /* Font family */
+}
+
+pre code {
+  display: block; /* Make the code block a block-level element */
+  background-color: #434c5e; /* Background color */
+  color: #81a1c1; /* Text color */
+  padding: 10px; /* Padding around the code block */
+  border-radius: 5px; /* Rounded corners */
+  font-size: 14px; /* Font size */
+  font-family: "Courier New", monospace; /* Font family */
+  white-space: pre-wrap; /* Preserve spaces and line breaks */
+}
+
+
+
 /* ... (rest of your CSS) ... */
 
 

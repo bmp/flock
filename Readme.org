@@ -28,7 +28,8 @@ Currently using
 - List Pens
 - Add Pens
 - Hard Coded Pen characteristics
-- Hard coded Nord theme
+- Hard coded Nord theme or  bug
+- Can import and export from a CSV
 - The SQLite database is created as follows,
 
 #+begin_src
@@ -96,3 +97,7 @@ go main.go
 - Create user logins and consolidated database for people to search
 - Search for your own pen
 - Comment code and add logs for every action
+
+* Completed Features
+** DONE Import from CSV and export to CSV
+CLOSED: [2023-08-23 Wed 15:46]
