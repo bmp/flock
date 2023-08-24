@@ -9,16 +9,25 @@ This Fountain Pen inventory is called Flock and has been created with the help o
 /Please note that this project uses Readme.org instead of Readme.md, some functionality might break on Codeberg when viewing the readme./
 
 ** Screenshots
-#+ATTR_ORG: :width 100px
+#+ATTR_ORG: :width 100
 #+ATTR_HTML: :width 100px
 #+CAPTION: Screenshot of listing of pens
 [[file:screenshots/listpens.png]]
 
-#+ATTR_ORG: :width 100px
+#+ATTR_ORG: :width 100
 #+ATTR_HTML: :width 100px
 #+CAPTION: Screenshot of adding a pen to the database
 [[file:./screenshots/addpen.png]]
 
+#+ATTR_ORG: :width 100
+#+ATTR_HTML: :width 100px
+#+CAPTION: Screenshot of importing a CSV file
+[[./screenshots/importcsv.png]]
+
+#+ATTR_ORG: :width 100
+#+ATTR_HTML: :width 100px
+#+CAPTION: Screenshot of approving and importing pens
+[[./screenshots/approveimport.png]]
 
 * Technology stack
 Currently using
@@ -85,7 +94,13 @@ go get github.com/mattn/go-sqlite3
 * To run the code
 
 #+begin_src
-go main.go
+go run main.go
+#+end_src
+
+In case you are unable to connect to the database, run the following and then the run command:
+
+#+begin_src
+go clean
 #+end_src
 
 * TODO

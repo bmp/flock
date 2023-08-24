@@ -28,6 +28,8 @@ func main() {
 	}
 	defer db.Close()
 
+	log.Println("Database connection established")
+
 	http.HandleFunc("/", listPens)
 	http.HandleFunc("/add", addPen)
 	http.HandleFunc("/export/csv", exportCSV)
@@ -44,8 +46,10 @@ func main() {
 		http.ServeFile(w, r, "includes/sort.js")
 	})
 
+	port := ":8000"
+	log.Println("Starting server on", port)
+	log.Fatal(http.ListenAndServe(port, nil))
 
-	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
 func fetchDataFromDB(query string) (columns []string, pens []map[string]interface{}, err error) {
@@ -251,8 +255,8 @@ func importCSV(w http.ResponseWriter, r *http.Request) {
 		columns := rows[0] // Assume the first row contains column headers
 		rows = rows[1:]    // Exclude the header row
 
-		log.Printf("Imported columns: %v\n", columns)
-		log.Printf("Imported rows: %v\n", rows)
+		//log.Printf("Imported columns: %v\n", columns)
+		//log.Printf("Imported rows: %v\n", rows)
 
 		data := struct {
 			Columns []string
@@ -272,8 +276,8 @@ func importCSV(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-				// Print the value of csvDataJSON
-		fmt.Println("csvDataJSON:", string(csvDataJSON))
+		// Print the value of csvDataJSON
+		//fmt.Println("csvDataJSON:", string(csvDataJSON))
 
 		columnsJSON, err := json.Marshal(data.Columns)
 		if err != nil {
@@ -329,7 +333,7 @@ func importApprove(w http.ResponseWriter, r *http.Request) {
 
 			statement := "INSERT INTO pens (" + strings.Join(columns[1:], ", ") + ") VALUES (" + valuePlaceholders + ")"
 
-			fmt.Println("insert query:", statement)
+			//fmt.Println("insert query:", statement)
 
 			stmt, err := tx.Prepare(statement)
 
