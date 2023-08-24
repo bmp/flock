@@ -9,6 +9,9 @@ This Fountain Pen inventory is called Flock and has been created with the help o
 /Please note that this project uses Readme.org instead of Readme.md, some functionality might break on Codeberg when viewing the readme./
 
 ** Screenshots
+
+Some screenshots of the web interface:
+
 #+ATTR_ORG: :width 100
 #+ATTR_HTML: :width 100px
 #+CAPTION: Screenshot of listing of pens
@@ -36,30 +39,14 @@ Currently using
 * Features
 - List Pens
 - Add Pens
+- Modify pens
 - Hard Coded Pen characteristics
 - Hard coded Nord theme or  bug
-- Can import and export from a CSV
-- The SQLite database is created as follows,
-
-#+begin_src
-CREATE TABLE pens (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT,
-    maker TEXT,
-    color TEXT,
-    material TEXT,
-    nib_size TEXT,
-    nib_color TEXT,
-    filling_system TEXT,
-    trims TEXT,
-    year INTEGER,
-    price REAL,
-    misc TEXT
-);
-#+end_src
-
-
+- Can import from and export to a CSV
 - Sorting by columns is supported
+
+* Deployment
+** Folder structure
 - Folder structure is as follows,
 
 #+begin_src
@@ -90,14 +77,34 @@ CREATE TABLE pens (
 
 #+end_src
 
-
+** Go Modules required
 - Following modules are needed
 
 #+begin_src
 go get github.com/mattn/go-sqlite3
 #+end_src
 
-* To run the code
+** Database structure
+- The SQLite database is created as follows,
+
+#+begin_src
+CREATE TABLE pens (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT,
+    maker TEXT,
+    color TEXT,
+    material TEXT,
+    nib_size TEXT,
+    nib_color TEXT,
+    filling_system TEXT,
+    trims TEXT,
+    year INTEGER,
+    price REAL,
+    misc TEXT
+);
+#+end_src
+
+** To run the code
 
 #+begin_src
 go run main.go
@@ -111,9 +118,9 @@ go clean
 
 * TODO
 - Add pagination
-- Fetch nib types from database
-- Fetch filling system from database
-- Fetch material from database
+- +Fetch nib types from database+
+- +Fetch filling system from database+
+- +Fetch material from database+
 - Convert date to Indian format
 - Create user logins and consolidated database for people to search
 - Search for your own pen
@@ -122,3 +129,7 @@ go clean
 * Completed Features
 ** DONE Import from CSV and export to CSV
 CLOSED: [2023-08-23 Wed 15:46]
+** DONE Implement modify pen
+CLOSED: [2023-08-24 Thu 22:58]
+** DONE Implemented adding custom types for nib size, material and filling system using HTML tag ~<datalist>~
+CLOSED: [2023-08-24 Thu 22:59]
