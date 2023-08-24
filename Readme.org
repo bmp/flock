@@ -63,27 +63,29 @@ CREATE TABLE pens (
 - Folder structure is as follows,
 
 
-      ├── Readme.org
-
-      ├── database.db
-
-      ├── includes
-
-      │      ├── datepicker.js
-
-      │      └── sort.js
-
-      ├── main.go
-
-      ├── static
-
-      │      └── styles.css
-
-      └── templates
-
-              ├── add.html
-
-              └── index.html
+├── LICENSE
+├── Readme.org
+├── database.db
+├── go.mod
+├── go.sum
+├── includes
+│   ├── css
+│   │   └── styles.css
+│   └── scripts
+│       ├── datepicker.js
+│       └── sort.js
+├── main.go
+├── screenshots
+│   ├── addpen.png
+│   ├── approveimport.png
+│   ├── importcsv.png
+│   └── listpens.png
+└── templates
+    ├── add.html
+    ├── import.html
+    ├── import_approve.html
+    ├── import_preview.html
+    └── index.html
 
 - Following modules are needed
 
