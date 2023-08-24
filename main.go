@@ -41,6 +41,7 @@ func main() {
 	http.HandleFunc("/export/csv", handlers.ExportCSV)         // Handle exporting to CSV
 	http.HandleFunc("/import/csv", handlers.ImportCSV)         // Handle importing from CSV
 	http.HandleFunc("/import/approve", handlers.ImportApprove) // Handle approving imported data from CSV
+	http.HandleFunc("/modify/", handlers.ModifyPen)            // Handle to modify details for a pen
 
 	// Serve static assets
 	http.HandleFunc("/includes/", func(w http.ResponseWriter, r *http.Request) {

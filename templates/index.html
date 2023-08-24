@@ -36,7 +36,7 @@
                 <th onclick="sortTable(11)">Comments</th>
             </tr>
             {{ range .Pens }}
-            <tr>
+            <tr id="penRow{{ .id }}" class="pen-row clickable-row">
               <td>{{ .id }}</td>
               <td>{{ .name }}</td>
               <td>{{ .maker }}</td>
@@ -55,5 +55,6 @@
   </div>
 
   <script src="/includes/scripts/sort.js"></script>
+  <script src="/includes/scripts/modifyRedirect.js"></script>
 </body>
 </html>

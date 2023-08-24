@@ -1,0 +1,37 @@
+<!-- templates/modify.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/includes/css/styles.css">
+  <title>Flock: Personal Fountain Pen Database</title>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Flock: Personal Fountain Pen Database</h1>
+      <h2>Modify your pen</h2>
+    </header>
+    <div style="text-align:center;margin-top:25px;">
+      <a href="/">Back to Main</a>
+    </div>
+    <div class="form-container">
+      <form method="POST">
+        {{ range .Columns }}
+        <label for="{{ . }}">{{ . }}</label>
+        <input type="text" name="{{ . }}" id="{{ . }}" value="{{ index $.Pen . }}">
+        {{ end }}
+
+        <div class="add-button-container">
+          <button type="submit" class="add-button">Modify Pen</button>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+
+  <script src="/includes/scripts/datepicker.js"></script>
+</body>
+</html>

@@ -242,8 +242,15 @@ input[list]::-webkit-calendar-picker-indicator {
   filter: invert(1);
 }
 
+.clickable-row {
+  cursor: pointer;
+}
 
-/* ... (rest of your CSS) ... */
+.clickable-row:hover {
+  background-color: #3b4252; /* Optional: Change the background color on hover */
+}
+
+/* Change @media  */
 
 
 @media (max-width: 768px) {

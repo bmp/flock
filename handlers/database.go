@@ -167,7 +167,7 @@ func InsertPen(values []string) error {
 }
 
 // ModifyPen updates a pen record in the database.
-func ModifyPen(id int64, values []string) error {
+func UpdatePen(id int64, values []string) error {
     columns := GetColumnNames("pens")
     columns = columns[1:] // Exclude "id"
 
@@ -184,6 +184,20 @@ func ModifyPen(id int64, values []string) error {
     }
     return nil
 }
+
+// GetPenByID retrieves a pen's data by its ID.
+func GetPenByID(id int64) (map[string]interface{}, error) {
+    query := fmt.Sprintf("SELECT * FROM pens WHERE id = %d", id)
+    _, pens, err := fetchDataFromDB(query)
+    if err != nil {
+        return nil, err
+    }
+    if len(pens) == 0 {
+        return nil, fmt.Errorf("pen not found")
+    }
+    return pens[0], nil
+}
+
 
 // Convert []string to []interface{}
 func interfaceSlice(slice []string) []interface{} {
