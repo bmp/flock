@@ -11,7 +11,7 @@
   <div class="container">
     <header>
       <h1>Flock: Personal Fountain Pen Database</h1>
-      <h2>Add your pen</he>
+      <h2>Add your pen</h2>
     </header>
     <div style="text-align:center;margin-top:25px;">
       <a href="/">Back to Main</a>
@@ -23,7 +23,8 @@
         {{ if eq . "year" }}
         <input type="date" name="year" id="year" min="1900-01-01" max="{{ $.CurrentYear }}-12-31">
         {{ else if eq . "nib_size" }}
-        <select name="{{ . }}" id="{{ . }}">
+        <input list="nib_size_options" name="{{ . }}" id="{{ . }}">
+        <datalist id="nib_size_options">
           <option value="UEF">UEF</option>
           <option value="EF">EF</option>
           <option value="F">F</option>
@@ -34,9 +35,10 @@
           <option value="Music">Music</option>
           <option value="Architect">Architect</option>
           <option value="Italic">Italic</option>
-        </select>
+        </datalist>
         {{ else if eq . "material" }}
-        <select name="{{ . }}" id="{{ . }}">
+        <input list="material_options" name="{{ . }}" id="{{ . }}">
+        <datalist id="material_options">
           <option value="Wood">Wood</option>
           <option value="Ebonite">Ebonite</option>
           <option value="Resin">Resin</option>
@@ -46,23 +48,26 @@
           <option value="Delrin">Delrin</option>
           <option value="Rubber">Rubber</option>
           <option value="Acrylic">Acrylic</option>
-        </select>
+        </datalist>
         {{ else if eq . "filling_system" }}
-        <select name="{{ . }}" id="{{ . }}">
+        <input list="filling_system_options" name="{{ . }}" id="{{ . }}">
+        <datalist id="filling_system_options">
           <option value="Cartridge">Cartridge</option>
           <option value="Converter">Converter</option>
           <option value="Eyedropper">Eyedropper</option>
           <option value="Piston">Piston</option>
           <option value="Sac/AeroMatic">Sac/AeroMatic</option>
           <option value="Vacuum">Vacuum</option>
-        </select>
+        </datalist>
         {{ else }}
         <input type="text" name="{{ . }}" id="{{ . }}">
         {{ end }}
         {{ end }}
+
         <div class="add-button-container">
           <button type="submit" class="add-button">Add Pen</button>
         </div>
+
       </form>
 
     </div>

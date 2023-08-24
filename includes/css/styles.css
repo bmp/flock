@@ -211,6 +211,36 @@ pre code {
   white-space: pre-wrap; /* Preserve spaces and line breaks */
 }
 
+/* Style for the dropdown options */
+select option,
+datalist option {
+  background-color: #4c566a;
+  color: #eceff4;
+}
+
+/* Style for the datalist */
+input[list] {
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #81a1c1;
+  background-color: #4c566a;
+  color: #eceff4;
+  border-radius: 5px;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  cursor: pointer;
+}
+
+/* Style for the dropdown arrow */
+input[list]::after {
+  content: " \u25bc";
+}
+
+/* Style for the datalist options */
+input[list]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
 
 
 /* ... (rest of your CSS) ... */
