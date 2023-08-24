@@ -3,7 +3,7 @@ package main
 
 import (
 	"database/sql"
-
+	"path/filepath"
 	"html/template"
 	"log"
 	"net/http"
@@ -36,14 +36,46 @@ func main() {
 	http.HandleFunc("/import/csv", importCSV)
 	http.HandleFunc("/import/approve", importApprove)
 
-	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
-	http.Handle("/includes/", http.StripPrefix("/includes/", http.FileServer(http.Dir("includes"))))
+	//http.Handle("/includes/css/", http.StripPrefix("/includes/css/", http.FileServer(http.Dir("/includes/css/"))))
+	//http.Handle("/includes/", http.StripPrefix("/includes/", http.FileServer(http.Dir("includes"))))
 
+	http.HandleFunc("/includes/", func(w http.ResponseWriter, r *http.Request) {
+		// Get the requested file path
+		filePath := "." + r.URL.Path
+
+		// Determine the file extension
+		fileExt := filepath.Ext(filePath)
+
+		// Set the Content-Type header based on the file extension
+		switch fileExt {
+		case ".js":
+			w.Header().Set("Content-Type", "application/javascript")
+		case ".css":
+			w.Header().Set("Content-Type", "text/css")
+		}
+
+		// Serve the file using http.FileServer
+		http.FileServer(http.Dir(".")).ServeHTTP(w, r)
+	})
 
 	// Serve JavaScript files with the correct MIME type
-	http.HandleFunc("/includes/sort.js", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/javascript") // Set the MIME type
-		http.ServeFile(w, r, "includes/sort.js")
+	// http.HandleFunc("/includes/sort.js", func(w http.ResponseWriter, r *http.Request) {
+	// 	w.Header().Set("Content-Type", "application/javascript") // Set the MIME type
+	// 	http.ServeFile(w, r, "includes/sort.js")
+	// })
+
+	http.HandleFunc("/includes/scripts", func(w http.ResponseWriter, r *http.Request) {
+		// Get the requested file path
+		filePath := "." + r.URL.Path
+
+		// Check if the requested file is a JavaScript file
+		if filepath.Ext(filePath) == ".js" {
+			// Set the Content-Type header to application/javascript
+			w.Header().Set("Content-Type", "application/javascript")
+		}
+
+		// Serve the file using http.FileServer
+		http.FileServer(http.Dir(".")).ServeHTTP(w, r)
 	})
 
 	port := ":8000"
