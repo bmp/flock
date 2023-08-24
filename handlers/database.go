@@ -1,4 +1,4 @@
-// handlers/database.go
+// Package handlers provides functionality to interact with the database and handle data operations.
 
 package handlers
 
@@ -12,9 +12,13 @@ import (
 	"os"
 )
 
+// dbName is the name of the SQLite database file.
 const dbName = "database.db"
+
 var db *sql.DB
 
+// CreateDatabaseIfNotExists checks if the database exists, and creates it if not.
+// If the database already exists, it simply opens it.
 func CreateDatabaseIfNotExists() (*sql.DB, error) {
 	// Get the current working directory
 	currentDir, err := os.Getwd()
@@ -67,11 +71,12 @@ func CreateDatabaseIfNotExists() (*sql.DB, error) {
 	return db, nil
 }
 
-
+// InitDB initializes the database connection for handlers.
 func InitDB(database *sql.DB) {
 	db = database
 }
 
+// fetchDataFromDB fetches data from the database based on the provided query.
 func fetchDataFromDB(query string) ([]string, []map[string]interface{}, error) {
 	rows, err := db.Query(query)
 	if err != nil {
@@ -109,6 +114,7 @@ func fetchDataFromDB(query string) ([]string, []map[string]interface{}, error) {
 	return columns, pens, nil
 }
 
+// GetColumnNames retrieves the column names of the specified table.
 func GetColumnNames(tableName string) []string {
 	rows, err := db.Query("PRAGMA table_info(" + tableName + ")")
 	if err != nil {
@@ -131,6 +137,7 @@ func GetColumnNames(tableName string) []string {
 	return columns
 }
 
+// SelectPens fetches all pens from the database.
 func SelectPens() ([]map[string]interface{}, []string, error) {
 	query := "SELECT * FROM pens"
 	columns, pens, err := fetchDataFromDB(query)
@@ -140,6 +147,7 @@ func SelectPens() ([]map[string]interface{}, []string, error) {
 	return pens, columns, nil
 }
 
+// InsertPen inserts a new pen record into the database.
 func InsertPen(values []string) error {
 	columns := GetColumnNames("pens")
 	columns = columns[1:] // Exclude "id"
@@ -158,6 +166,7 @@ func InsertPen(values []string) error {
 	return nil
 }
 
+// ModifyPen updates a pen record in the database.
 func ModifyPen(id int64, values []string) error {
     columns := GetColumnNames("pens")
     columns = columns[1:] // Exclude "id"

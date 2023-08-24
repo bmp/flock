@@ -1,5 +1,4 @@
-// handlers/import_export.go
-
+// Package handlers provides functionality to interact with the database and handle data operations.
 package handlers
 
 import (
@@ -13,6 +12,10 @@ import (
 	"html/template"
 )
 
+
+// ExportCSV exports the data from the "pens" table in CSV format.
+// It retrieves the data using SelectPens, generates a CSV file with the data,
+// and sends the file as a response with proper headers.
 func ExportCSV(w http.ResponseWriter, r *http.Request) {
 
 	pens, columns, err := SelectPens()
@@ -61,6 +64,10 @@ func ExportCSV(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+
+// ImportCSV handles the import of data from a CSV file.
+// It supports both GET and POST requests. For GET requests, it renders the import form.
+// For POST requests, it processes the uploaded CSV file, extracts data, and renders a preview.
 func ImportCSV(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost {
 		r.ParseMultipartForm(10 << 20) // Max memory usage for uploaded files
@@ -133,6 +140,11 @@ func ImportCSV(w http.ResponseWriter, r *http.Request) {
 	tmpl.Execute(w, nil)
 }
 
+
+
+// ImportApprove handles the approval of imported data.
+// It processes the approved data and inserts it into the database.
+// This function is called after the user reviews the imported data and confirms the import.
 func ImportApprove(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost {
 		csvData := r.FormValue("csvData")

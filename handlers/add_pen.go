@@ -1,5 +1,4 @@
-// handlers/add_pen.go
-
+// Package handlers provides functionality to interact with the database and handle data operations.
 package handlers
 
 import (
@@ -10,6 +9,12 @@ import (
 	"time"
 )
 
+
+// AddPen handles the addition of a new pen to the database.
+// It processes both GET and POST requests. For GET requests, it renders
+// the add pen form with dynamic column names and the current year.
+// For POST requests, it extracts form values, prepares column values,
+// and inserts the pen into the database using the InsertPen function.
 func AddPen(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost {
 		r.ParseForm()
@@ -47,6 +52,8 @@ func AddPen(w http.ResponseWriter, r *http.Request) {
 	tmpl.Execute(w, data)
 }
 
+// convertInterfaceToStringSlice converts a slice of interfaces to a slice of strings.
+// It filters out non-string values and returns a string slice.
 func convertInterfaceToStringSlice(interfaceSlice []interface{}) []string {
     stringSlice := make([]string, len(interfaceSlice))
     for i, v := range interfaceSlice {

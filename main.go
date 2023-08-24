@@ -1,4 +1,4 @@
-// main.go
+// main.go is the entry point of Flock
 package main
 
 import (
@@ -36,12 +36,13 @@ func main() {
 
 	log.Println("Database connection established")
 
-	http.HandleFunc("/", handlers.ListPens)
-	http.HandleFunc("/add", handlers.AddPen)
-	http.HandleFunc("/export/csv", handlers.ExportCSV)
-	http.HandleFunc("/import/csv", handlers.ImportCSV)
-	http.HandleFunc("/import/approve", handlers.ImportApprove)
+	http.HandleFunc("/", handlers.ListPens)                    // Handle listing pens
+	http.HandleFunc("/add", handlers.AddPen)                   // Handle adding a pen
+	http.HandleFunc("/export/csv", handlers.ExportCSV)         // Handle exporting to CSV
+	http.HandleFunc("/import/csv", handlers.ImportCSV)         // Handle importing from CSV
+	http.HandleFunc("/import/approve", handlers.ImportApprove) // Handle approving imported data from CSV
 
+	// Serve static assets
 	http.HandleFunc("/includes/", func(w http.ResponseWriter, r *http.Request) {
 		// Get the requested file path
 		filePath := "." + r.URL.Path
