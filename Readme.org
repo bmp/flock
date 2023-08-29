@@ -53,14 +53,22 @@ Currently using
 
 ├── LICENSE
 ├── Readme.org
-├── database.db
+├── database
+│   └── database.db
 ├── go.mod
 ├── go.sum
+├── handlers
+│   ├── add_pen.go
+│   ├── database.go
+│   ├── import_export.go
+│   ├── list_pens.go
+│   └── modify.go
 ├── includes
 │   ├── css
-│   │ └── styles.css
+│   │   └── styles.css
 │   └── scripts
 │       ├── datepicker.js
+│       ├── modifyRedirect.js
 │       └── sort.js
 ├── main.go
 ├── screenshots
@@ -73,7 +81,8 @@ Currently using
     ├── import.html
     ├── import_approve.html
     ├── import_preview.html
-    └── index.html
+    ├── index.html
+    └── modify.html
 
 #+end_src
 
@@ -121,7 +130,7 @@ go clean
 - +Fetch nib types from database+
 - +Fetch filling system from database+
 - +Fetch material from database+
-- Convert date to Indian format
+- +Convert date to Indian format+
 - Create user logins and consolidated database for people to search
 - Search for your own pen
 - Comment code and add logs for every action
