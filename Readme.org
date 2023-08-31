@@ -4,7 +4,7 @@
 
 * Description
 
-This Fountain Pen inventory is called Flock and has been created with the help of LLMs
+This Fountain Pen inventory is called Flock and has been created with the help of LLMs and is experimental.
 
 /Please note that this project uses Readme.org instead of Readme.md, some functionality might break on Codeberg when viewing the readme./
 
