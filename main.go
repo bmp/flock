@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"path/filepath"
 	//"html/template"
+	//"text/template"
 	"log"
 	"net/http"
 	//"strings"
@@ -36,12 +37,13 @@ func main() {
 
 	log.Println("Database connection established")
 
-	http.HandleFunc("/", handlers.ListPens)                    // Handle listing pens
-	http.HandleFunc("/add", handlers.AddPen)                   // Handle adding a pen
-	http.HandleFunc("/export/csv", handlers.ExportCSV)         // Handle exporting to CSV
-	http.HandleFunc("/import/csv", handlers.ImportCSV)         // Handle importing from CSV
-	http.HandleFunc("/import/approve", handlers.ImportApprove) // Handle approving imported data from CSV
-	http.HandleFunc("/modify/", handlers.ModifyPen)            // Handle to modify details for a pen
+	http.HandleFunc("/", handlers.ListPens)                    // Handler listing pens
+	http.HandleFunc("/add", handlers.AddPen)                   // Handler adding a pen
+	http.HandleFunc("/export/csv", handlers.ExportCSV)         // Handler exporting to CSV
+	http.HandleFunc("/import/csv", handlers.ImportCSV)         // Handler importing from CSV
+	http.HandleFunc("/import/approve", handlers.ImportApprove) // Handler approving imported data from CSV
+	http.HandleFunc("/modify/", handlers.ModifyPen)            // Handler to modify details for a pen
+	http.HandleFunc("/delete/", handlers.DeletePen)            // Handler to delete a pen
 
 	// Serve static assets
 	http.HandleFunc("/includes/", func(w http.ResponseWriter, r *http.Request) {

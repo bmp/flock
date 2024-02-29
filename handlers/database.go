@@ -225,3 +225,18 @@ func convertStringSliceToInterfaceSlice(slice []string) []interface{} {
     }
     return interfaceSlice
 }
+
+
+// DeletePenByID deletes a pen from the database by its ID.
+func DeletePenByID(id int64) error {
+	// Construct the delete query
+	deleteQuery := fmt.Sprintf("DELETE FROM pens WHERE id = ?")
+
+	// Execute the delete query
+	_, err := db.Exec(deleteQuery, id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

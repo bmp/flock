@@ -16,6 +16,7 @@ import (
 // For POST requests, it extracts form values, prepares column values,
 // and inserts the pen into the database using the InsertPen function.
 func AddPen(w http.ResponseWriter, r *http.Request) {
+	var err error // Declare err here so that it's accessible in the entire function
 	if r.Method == http.MethodPost {
 		r.ParseForm()
 
@@ -43,23 +44,29 @@ func AddPen(w http.ResponseWriter, r *http.Request) {
 	data := struct {
 		Columns     []string
 		CurrentYear int
+		Title       func(string) string // Function to capitalize and replace underscores
 	}{
 		Columns:     columns, // Include all columns, excluding "id"
 		CurrentYear: time.Now().Year(),
+		Title:       Title, // Pass the Title function to the template
 	}
 
-	tmpl := template.Must(template.ParseFiles("templates/add.html"))
+	// tmpl := template.Must(template.ParseFiles("templates/add.html"))
+	tmpl := template.Must(template.New("add.html").Funcs(template.FuncMap{"Title": Title}).ParseFiles("templates/add.html"))
+	if err != nil {
+    log.Fatal("Error parsing add.html template:", err)
+	}
 	tmpl.Execute(w, data)
 }
 
 // convertInterfaceToStringSlice converts a slice of interfaces to a slice of strings.
 // It filters out non-string values and returns a string slice.
 func convertInterfaceToStringSlice(interfaceSlice []interface{}) []string {
-    stringSlice := make([]string, len(interfaceSlice))
-    for i, v := range interfaceSlice {
-        if value, ok := v.(string); ok {
-            stringSlice[i] = value
-        }
-    }
-    return stringSlice
+	stringSlice := make([]string, len(interfaceSlice))
+	for i, v := range interfaceSlice {
+		if value, ok := v.(string); ok {
+			stringSlice[i] = value
+		}
+	}
+	return stringSlice
 }

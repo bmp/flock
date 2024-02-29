@@ -142,6 +142,30 @@ a:hover {
   background-color: #4c7db6;
 }
 
+.delete-button-container {
+  text-align: center; /* Center the button horizontally */
+  margin-top: 20px;
+}
+
+.delete-button {
+  display: inline-block;
+  padding: 15px 25px;
+  background-color: #5e81ac;
+  color: #eceff4;
+  text-decoration: none;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  margin-right: 10px;
+  margin-left: 10px;
+  font-size: 18px;
+}
+
+.delete-button:hover {
+  background-color: #4c7db6;
+}
+
 /* Style for the dropdown menu */
 select {
   padding: 10px;

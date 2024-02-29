@@ -38,6 +38,7 @@ func ListPens(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Parse and execute the template
-	tmpl := template.Must(template.ParseFiles("templates/index.html"))
+	// tmpl := template.Must(template.ParseFiles("templates/index.html"))
+	tmpl := template.Must(template.New("index.html").Funcs(template.FuncMap{"Add": Add}).ParseFiles("templates/index.html"))
 	tmpl.Execute(w, data)
 }

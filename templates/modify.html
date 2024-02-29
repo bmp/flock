@@ -19,19 +19,72 @@
     <div class="form-container">
       <form method="POST">
         {{ range .Columns }}
-        <label for="{{ . }}">{{ . }}</label>
-        <input type="text" name="{{ . }}" id="{{ . }}" value="{{ index $.Pen . }}">
+          <!-- Skip rendering input for "id" column -->
+          {{ if ne . "id" }}
+            <label for="{{ . }}">{{ Title . }}</label>
+            {{ if eq . "nib_size" }}
+              <input list="nib_size_options" name="{{ . }}" id="{{ . }}" value="{{ index $.Pen . }}">
+              <datalist id="nib_size_options">
+                <option value="UEF">UEF</option>
+                <option value="EF">EF</option>
+                <option value="F">F</option>
+                <option value="M">M</option>
+                <option value="B">B</option>
+                <option value="BB">BB</option>
+                <option value="BBB">BBB</option>
+                <option value="Music">Music</option>
+                <option value="Architect">Architect</option>
+                <option value="Italic">Italic</option>
+              </datalist>
+            {{ else if eq . "material" }}
+              <input list="material_options" name="{{ . }}" id="{{ . }}" value="{{ index $.Pen . }}">
+              <datalist id="material_options">
+                <option value="Wood">Wood</option>
+                <option value="Ebonite">Ebonite</option>
+                <option value="Resin">Resin</option>
+                <option value="Metal">Metal</option>
+                <option value="Lacquer">Lacquer</option>
+                <option value="Wood encased Ebonite">Wood encased Ebonite</option>
+                <option value="Delrin">Delrin</option>
+                <option value="Rubber">Rubber</option>
+                <option value="Acrylic">Acrylic</option>
+              </datalist>
+            {{ else if eq . "filling_system" }}
+              <input list="filling_system_options" name="{{ . }}" id="{{ . }}" value="{{ index $.Pen . }}">
+              <datalist id="filling_system_options">
+                <option value="Cartridge">Cartridge</option>
+                <option value="Converter">Converter</option>
+                <option value="Eyedropper">Eyedropper</option>
+                <option value="Piston">Piston</option>
+                <option value="Sac/AeroMatic">Sac/AeroMatic</option>
+                <option value="Vacuum">Vacuum</option>
+              </datalist>
+            {{ else }}
+              <input type="text" name="{{ . }}" id="{{ . }}" value="{{ index $.Pen . }}">
+            {{ end }}
+          {{ end }}
         {{ end }}
+
+        <!-- Add a hidden input field for the Pen ID -->
+        <input type="hidden" name="id" value="{{ index $.Pen "id" }}">
 
         <div class="add-button-container">
           <button type="submit" class="add-button">Modify Pen</button>
+          <button type="button" class="delete-button" onclick="confirmDelete()">Delete Pen</button>
         </div>
-
       </form>
-
     </div>
   </div>
 
   <script src="/includes/scripts/datepicker.js"></script>
+  <!-- JavaScript function for confirmation dialog -->
+  <script>
+    function confirmDelete() {
+      var result = confirm("Are you sure you want to delete this pen?");
+      if (result) {
+        window.location.href = "/delete/{{ index $.Pen "id" }}"; // Redirect to the delete_pen handler
+      }
+    }
+  </script>
 </body>
 </html>

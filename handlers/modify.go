@@ -70,6 +70,7 @@ func ModifyPen(w http.ResponseWriter, r *http.Request) {
 
 	//fmt.Println("Data:", data)
 
-	tmpl := template.Must(template.ParseFiles("templates/modify.html"))
+	// tmpl := template.Must(template.ParseFiles("templates/modify.html"))
+	tmpl := template.Must(template.New("modify.html").Funcs(template.FuncMap{"Title": Title}).ParseFiles("templates/modify.html"))
 	tmpl.Execute(w, data)
 }
