@@ -20,25 +20,31 @@ import (
 //   - w (http.ResponseWriter): The HTTP response writer to write the response to.
 //   - r (*http.Request): The HTTP request containing details of the request.
 func ListPens(w http.ResponseWriter, r *http.Request) {
-	// Fetch pens and columns from the database
-	pens, columns, err := SelectPens()
-	if err != nil {
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-		log.Println("Error fetching data:", err)
-		return
-	}
+    // Get the user ID from the session (you need to implement this part)
+    userID := GetUserIDFromSession(r)
+    if userID == 0 {
+        http.Error(w, "Unauthorized", http.StatusUnauthorized)
+        return
+    }
 
-	// Prepare data for template rendering
-	data := struct {
-		Pens    []map[string]interface{}
-		Columns []string
-	}{
-		Pens:    pens,
-		Columns: columns,
-	}
+    // Fetch pens and columns from the user's pens database
+    pens, columns, err := SelectPens(userID)
+    if err != nil {
+        http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+        log.Println("Error fetching data:", err)
+        return
+    }
 
-	// Parse and execute the template
-	// tmpl := template.Must(template.ParseFiles("templates/index.html"))
-	tmpl := template.Must(template.New("index.html").Funcs(template.FuncMap{"Add": Add}).ParseFiles("templates/index.html"))
-	tmpl.Execute(w, data)
+    // Prepare data for template rendering
+    data := struct {
+        Pens    []map[string]interface{}
+        Columns []string
+    }{
+        Pens:    pens,
+        Columns: columns,
+    }
+
+    // Parse and execute the template
+    tmpl := template.Must(template.New("dashboard.html").Funcs(template.FuncMap{"Add": Add}).ParseFiles("templates/dashboard.html"))
+    tmpl.Execute(w, data)
 }

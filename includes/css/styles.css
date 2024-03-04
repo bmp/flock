@@ -19,9 +19,15 @@ header {
   color: #eceff4;
   padding: 20px;
   text-align: center;
+  border-radius: 3px; /* Rounded corners */
 }
 
 header a {
+  color: #eceff4;
+  text-decoration: none;
+}
+
+header a:hover {
   color: #eceff4;
   text-decoration: none;
 }
@@ -150,7 +156,7 @@ a:hover {
 .delete-button {
   display: inline-block;
   padding: 15px 25px;
-  background-color: #5e81ac;
+  background-color: #bf616a !important;
   color: #eceff4;
   text-decoration: none;
   border: none;
@@ -163,7 +169,23 @@ a:hover {
 }
 
 .delete-button:hover {
-  background-color: #4c7db6;
+  background-color: #bf616a;
+}
+
+/* Add this style wherever you see fit */
+.logout-button {
+  display: inline-block;
+  padding: 15px 25px;
+  background-color: #bf616a;
+  color: #eceff4;
+  text-decoration: none;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  margin-right: 10px;
+  margin-left: 10px;
+  font-size: 18px;
 }
 
 /* Style for the dropdown menu */
@@ -191,6 +213,44 @@ select option {
   color: #eceff4;
 }
 
+/* Style for text input fields */
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  background-color: #4c566a;
+  color: #eceff4;
+  border: none;
+  border-bottom: 2px solid #81a1c1;
+  padding: 10px;
+  font-size: 16px;
+  width: 95%;
+  transition: border-bottom-color 0.3s ease-in-out;
+  margin-bottom: 20px;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus {
+  border-bottom-color: #5e81ac;
+  outline: none;
+}
+
+/* Style for textarea */
+textarea {
+  background-color: #4c566a;
+  color: #eceff4;
+  border: 2px solid #81a1c1;
+  padding: 10px;
+  font-size: 16px;
+  width: 95%;
+  transition: border-color 0.3s ease-in-out;
+  margin-bottom: 20px;
+}
+
+textarea:focus {
+  border-color: #5e81ac;
+  outline: none;
+}
 
 /* Style for date input field */
 input[type="date"] {
@@ -213,6 +273,78 @@ input[type="date"]:focus {
 /* Style for date picker */
 input[type="date"]::-webkit-calendar-picker-indicator {
   filter: invert(1);
+}
+
+/* Accordian styling for folding in CSS */
+.accordion > input[type="checkbox"] {
+  position: absolute;
+  left: -100vw;
+}
+
+.accordion .content {
+  overflow-y: hidden;
+  height: 0;
+  transition: height 0.3s ease;
+  background-color: #4c566a;
+}
+
+.accordion > input[type="checkbox"]:checked ~ .content {
+  height: auto;
+  overflow: visible;
+  border-bottom-left-radius: 3px 3px;
+  border-bottom-right-radius: 3px 3px;
+}
+
+.accordion label {
+  display: block;
+}
+
+.accordion {
+    margin-bottom: 1em;
+    background-color: #4c566a;
+    border-radius: 3px;
+    width: 80%;
+    margin: 0 auto;
+}
+
+.accordion > input[type="checkbox"]:checked ~ .content {
+  padding: 15px;
+  /* border: 1px solid #ebcb8b; */
+  border-top: 0;
+}
+
+.accordion .handle {
+  margin: 0;
+  font-size: 1.125em;
+  line-height: 1.2em;
+}
+
+.accordion label {
+  color: #333;
+  cursor: pointer;
+  font-weight: normal;
+  padding: 15px;
+  background: #ebcb8b;
+  border-radius: 3px;
+}
+
+.accordion label:hover,
+.accordion label:focus {
+  background: #ebcb8b;
+}
+
+.accordion .handle label:before {
+ /* font-family: 'fontawesome'; */
+  content: "\2B9E";
+  display: inline-block;
+  margin-right: 10px;
+  font-size: .58em;
+  line-height: 1.556em;
+  vertical-align: middle;
+}
+
+.accordion > input[type="checkbox"]:checked ~ .handle label:before {
+    content: "\2B9F";
 }
 
 code {
@@ -287,6 +419,11 @@ input[list]::-webkit-calendar-picker-indicator {
   }
 
   table {
-    font-size: 14px;
+      font-size: 14px;
+  }
+
+  form {
+      margin-left: auto;
+      margin-right: auto;
   }
 }

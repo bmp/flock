@@ -3,8 +3,10 @@
 package handlers
 
 import (
+	"net/http"
 	"strings"
 	"html/template"
+	"fmt"
 	// "path/filepath"
 )
 
@@ -38,4 +40,22 @@ func RegisterTemplate(name string, tmpl *template.Template) {
 func GetTemplate(name string) (*template.Template, bool) {
 	tmpl, ok := templates[name]
 	return tmpl, ok
+}
+
+// renderTemplate renders an HTML template.
+func renderTemplate(w http.ResponseWriter, templateName string, data interface{}) {
+	// Parse the template files
+	tmplFiles := fmt.Sprintf("templates/%s.html", templateName)
+	tmpl, err := template.ParseFiles(tmplFiles)
+	if err != nil {
+		http.Error(w, "Error parsing template file: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Execute the template with the provided data
+	err = tmpl.Execute(w, data)
+	if err != nil {
+		http.Error(w, "Error executing template: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
 }

@@ -1,14 +1,14 @@
-// Package handlers provides functionality to interact with the database and handle data operations.
+// handlers/add_pen.go
+
 package handlers
 
 import (
-	"html/template"
-	"log"
-	"net/http"
-	"strings"
-	"time"
+    "html/template"
+    "log"
+    "net/http"
+    "strings"
+    "time"
 )
-
 
 // AddPen handles the addition of a new pen to the database.
 // It processes both GET and POST requests. For GET requests, it renders
@@ -20,7 +20,10 @@ func AddPen(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost {
 		r.ParseForm()
 
-		columns := GetColumnNames("pens") // Fetch column names dynamically using handler function
+		// Get userID from the session
+		userID := GetUserIDFromSession(r)
+
+		columns := GetColumnNames(userID, "pens") // Fetch column names dynamically using handler function
 		// Remove "id" from column names and values
 		columns = columns[1:]
 		columnValues := make([]interface{}, len(columns))
@@ -30,16 +33,21 @@ func AddPen(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// Insert the pen using the InsertPen function from handlers
-		err := InsertPen(convertInterfaceToStringSlice(columnValues))
+		// err := InsertPen(convertInterfaceToStringSlice(columnValues))
+		err := InsertPen(userID, convertInterfaceToStringSlice(columnValues))
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		http.Redirect(w, r, "/", http.StatusSeeOther)
+		http.Redirect(w, r, "/dashboard", http.StatusSeeOther)
 		return
 	}
 
-	columns := GetColumnNames("pens") // Fetch column names dynamically using handler function
+	// For GET requests, render the form
+	// Get userID from the session
+	userID := GetUserIDFromSession(r)
+
+	columns := GetColumnNames(userID, "pens") // Fetch column names dynamically using handler function
 
 	data := struct {
 		Columns     []string
@@ -54,19 +62,7 @@ func AddPen(w http.ResponseWriter, r *http.Request) {
 	// tmpl := template.Must(template.ParseFiles("templates/add.html"))
 	tmpl := template.Must(template.New("add.html").Funcs(template.FuncMap{"Title": Title}).ParseFiles("templates/add.html"))
 	if err != nil {
-    log.Fatal("Error parsing add.html template:", err)
+		log.Fatal("Error parsing add.html template:", err)
 	}
 	tmpl.Execute(w, data)
-}
-
-// convertInterfaceToStringSlice converts a slice of interfaces to a slice of strings.
-// It filters out non-string values and returns a string slice.
-func convertInterfaceToStringSlice(interfaceSlice []interface{}) []string {
-	stringSlice := make([]string, len(interfaceSlice))
-	for i, v := range interfaceSlice {
-		if value, ok := v.(string); ok {
-			stringSlice[i] = value
-		}
-	}
-	return stringSlice
 }

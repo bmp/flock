@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/includes/css/styles.css">
+  <title>Fountain Pen Database - Login</title>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1><a href="/">Flock: Personal Fountain Pen Database</a></h1>
+    </header>
+    <div style="text-align:center;margin-top:25px;">
+      <a href="/">Back to Main</a>
+    </div>
+    <div class="form-container">
+      <h2>Login</h2>
+      <!-- User login form -->
+      <form action="/login" method="post">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+        <div class="add-button-container">
+          <button type="submit" class="add-button">Login</button>
+          </div>
+      </form>
+    </div>
+  </div>
+  <script src="/includes/scripts/modifyRedirect.js"></script>
+</body>
+</html>

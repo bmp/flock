@@ -17,8 +17,15 @@ import (
 // It retrieves the data using SelectPens, generates a CSV file with the data,
 // and sends the file as a response with proper headers.
 func ExportCSV(w http.ResponseWriter, r *http.Request) {
+	// Get the user ID from the session (you need to implement this part)
+	userID := GetUserIDFromSession(r)
+	if userID == 0 {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		log.Println("Unauthorized access to ExportCSV")
+		return
+	}
 
-	pens, columns, err := SelectPens()
+	pens, columns, err := SelectPens(userID)  // Pass the userID parameter here
 	if err != nil {
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		log.Println("Error fetching data:", err)
@@ -69,6 +76,13 @@ func ExportCSV(w http.ResponseWriter, r *http.Request) {
 // It supports both GET and POST requests. For GET requests, it renders the import form.
 // For POST requests, it processes the uploaded CSV file, extracts data, and renders a preview.
 func ImportCSV(w http.ResponseWriter, r *http.Request) {
+	userID := GetUserIDFromSession(r)
+	if userID == 0 {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		log.Println("Unauthorized access to ImportCSV")
+		return
+	}
+
 	if r.Method == http.MethodPost {
 		r.ParseMultipartForm(10 << 20) // Max memory usage for uploaded files
 
@@ -146,6 +160,13 @@ func ImportCSV(w http.ResponseWriter, r *http.Request) {
 // It processes the approved data and inserts it into the database.
 // This function is called after the user reviews the imported data and confirms the import.
 func ImportApprove(w http.ResponseWriter, r *http.Request) {
+	userID := GetUserIDFromSession(r)
+	if userID == 0 {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		log.Println("Unauthorized access to ImportApprove")
+		return
+	}
+
 	if r.Method == http.MethodPost {
 		csvData := r.FormValue("csvData")
 		var rows [][]string
@@ -164,7 +185,7 @@ func ImportApprove(w http.ResponseWriter, r *http.Request) {
 
 		for _, row := range rows {
 			// Start from index 1 to exclude the id column
-			if err := InsertPen(row[1:]); err != nil {
+			if err := InsertPen(userID, row[1:]); err != nil {
 				tx.Rollback()
 				http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 				log.Println("Error inserting pen:", err)
@@ -179,7 +200,7 @@ func ImportApprove(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		http.Redirect(w, r, "/", http.StatusSeeOther)
+		http.Redirect(w, r, "/dashboard", http.StatusSeeOther)
 		return
 	}
 }

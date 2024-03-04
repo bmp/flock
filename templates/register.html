@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/includes/css/styles.css">
+
+  <title>Fountain Pen Database - Register</title>
+
+  <script>
+    function validateCaptcha() {
+        var captchaAnswer = document.getElementById("captchaAnswer").value.toLowerCase();
+        var expectedAnswer = "{{ .CaptchaAnswer }}"; // Assuming .CaptchaAnswer is passed from the server-side
+
+        if (captchaAnswer !== expectedAnswer) {
+          alert("Incorrect CAPTCHA. Please try again.");
+          document.getElementById("captchaAnswer").value = ""; // Clear the CAPTCHA input
+          return false; // Prevent form submission
+        }
+
+        return true; // Allow form submission
+    }
+  </script>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1><a href="/">Flock: Personal Fountain Pen Database</a></h1>
+    </header>
+    <div style="text-align:center;margin-top:25px;">
+      <a href="/">Back to Main</a>
+    </div>
+    <div class="form-container">
+      <h2>Create an Account</h2>
+      <!-- User registration form -->
+      <form action="/register" method="post" onsubmit="return validateCaptcha()">
+        <!-- User details -->
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
+
+        <label for="firstName">First Name:</label>
+        <input type="text" id="firstName" name="firstName" required>
+
+        <label for="middleName">Middle Name:</label>
+        <input type="text" id="middleName" name="middleName">
+
+        <label for="lastName">Last Name:</label>
+        <input type="text" id="lastName" name="lastName" required>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+
+        <label for="bio">Bio:</label>
+        <textarea id="bio" name="bio" rows="4"></textarea>
+
+        <!-- Custom CAPTCHA -->
+        <label for="captchaAnswer" title="Enter a single word">CAPTCHA<br>{{ .CaptchaQuestion }}</label>
+        <input type="text" id="captchaAnswer" name="captchaAnswer" required placeholder="Enter a single word in lower case">
+
+        <!-- Register button -->
+        <div class="add-button-container"><div class="add-button-container">
+            <button type="submit" class="add-button">Register</button>
+          </div>
+      </form>
+    </div>
+  </div>
+  <script src="/includes/scripts/modifyRedirect.js"></script>
+</body>
+</html>

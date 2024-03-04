@@ -11,25 +11,25 @@
   <body>
     <div class="container">
       <header>
-        <h1>Flock: Personal Fountain Pen Database</h1>
-        <h2>Import Pens from CSV</he>
+        <h1><a href="/dashboard">Flock: Personal Fountain Pen Database</a></h1>
+      <h2>Import Pens from CSV</h2>
       </header>
-    <div style="text-align:center;margin-top:25px;">
-      <a href="/">Back to Main</a>
-    </div>
+      <div style="text-align:center;margin-top:25px;">
+        <a href="/dashboard">Back to Main</a>
+      </div>
     <b>Please note:</b>
     <ol type="1">
       <li>
-        We need the following format for the CSV,
+        Please follow the format shown below for the CSV file,
         <pre><code>id,name,maker,color,material,nib_size,nib_color,filling_system,trims,year,price,misc
-            1,Jumbo,Guider,Black,Ebonite,Medium,Silver,Eyedropper,Chrome,2023-10-01,$80,Big heavy pen
-            2,Sandalwood,Fosfor,Wood Grains,Wood encased Ebonite,Fine,Dualtone,Converter,Threaded,2022-08-05,$250,Classical pen</code></pre>
+1,Jumbo,Guider,Black,Ebonite,Medium,Silver,Eyedropper,Chrome,2023-10-01,$80,Big heavy pen
+2,Sandalwood,Fosfor,Wood Grains,Wood encased Ebonite,Fine,Dualtone,Converter,Threaded,2022-08-05,$250,Classical pen</code></pre>
       </li>
       <li>
         The first column is moot and the value will not be used.
       </li>
       <li>
-        The recommended way would be to download/export csv and then modify that file keeping the first row (identifier row) intact.
+        The recommended way would be to download/export csv and then modify that file keeping the first row (i.e, the identifier row) intact.
     </ol>
     <div class="form-container">
       <form method="POST" enctype="multipart/form-data">

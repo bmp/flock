@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/includes/css/styles.css">
+
+  <title>Fountain Pen Database</title>
+
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1><a href="/dashboard">Flock: Personal Fountain Pen Database<a href="/dashboard"></h1>
+    </header>
+    <div class="add-button-container">
+      <a href="/add" class="add-button">Add a Fountain Pen</a>
+      <a href="/export/csv" class="add-button">Export CSV</a>
+      <a href="/import/csv" class="add-button">Import CSV</a>
+      <a href="/logout" class="logout-button">Logout</a>
+    </div>
+        <table id="pensList">
+            <tr>
+                <th onclick="sortTable(0)">No.</th>
+                <th onclick="sortTable(1)">Name</th>
+                <th onclick="sortTable(2)">Maker</th>
+                <th onclick="sortTable(3)">Color</th>
+                <th onclick="sortTable(4)">Material</th>
+                <th onclick="sortTable(5)">Nib Size</th>
+                <th onclick="sortTable(6)">Nib Color</th>
+                <th onclick="sortTable(7)">Filling System</th>
+                <th onclick="sortTable(8)">Trims</th>
+                <th onclick="sortTable(9)">Year</th>
+                <th onclick="sortTable(10)">Price</th>
+                <th onclick="sortTable(11)">Comments</th>
+            </tr>
+            {{ range $index, $pen := .Pens }}
+            <tr id="penRow{{ $pen.id }}" class="pen-row clickable-row">
+              <td>{{ Add $index 1 }}</td> <!-- Increment index by 1 -->
+              <td>{{ $pen.name }}</td>
+              <td>{{ $pen.maker }}</td>
+              <td>{{ $pen.color }}</td>
+              <td>{{ $pen.material }}</td>
+              <td>{{ $pen.nib_size }}</td>
+              <td>{{ $pen.nib_color }}</td>
+              <td>{{ $pen.filling_system }}</td>
+              <td>{{ $pen.trims }}</td>
+              <td>{{ $pen.year }}</td>
+              <td>{{ $pen.price }}</td>
+              <td>{{ $pen.misc }}</td>
+            {{ end }}
+        </table>
+  </div>
+
+  <script src="/includes/scripts/sort.js"></script>
+  <script src="/includes/scripts/modifyRedirect.js"></script>
+</body>
+</html>

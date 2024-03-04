@@ -18,6 +18,8 @@ import (
 
 	_ "github.com/mattn/go-sqlite3"
 
+	// "golang.org/x/crypto/bcrypt"
+
 	"flock/handlers"
 )
 
@@ -37,13 +39,17 @@ func main() {
 
 	log.Println("Database connection established")
 
-	http.HandleFunc("/", handlers.ListPens)                    // Handler listing pens
+	http.HandleFunc("/", handlers.Index)                       // Handler listing pens
+	http.HandleFunc("/register", handlers.Register)            // Handler for registering user
+	http.HandleFunc("/login", handlers.Login)                  // Handler for login
+	http.HandleFunc("/dashboard", handlers.ListPens)           // Handler listing pens
 	http.HandleFunc("/add", handlers.AddPen)                   // Handler adding a pen
 	http.HandleFunc("/export/csv", handlers.ExportCSV)         // Handler exporting to CSV
 	http.HandleFunc("/import/csv", handlers.ImportCSV)         // Handler importing from CSV
 	http.HandleFunc("/import/approve", handlers.ImportApprove) // Handler approving imported data from CSV
 	http.HandleFunc("/modify/", handlers.ModifyPen)            // Handler to modify details for a pen
 	http.HandleFunc("/delete/", handlers.DeletePen)            // Handler to delete a pen
+	http.HandleFunc("/logout", handlers.Logout)                // Handler for logout
 
 	// Serve static assets
 	http.HandleFunc("/includes/", func(w http.ResponseWriter, r *http.Request) {

@@ -6,6 +6,7 @@ import (
 	"html/template"
 	"net/http"
 	"strconv"
+	"log"
 )
 
 // ModifyPen handles the modification of a pen in the database.
@@ -14,6 +15,14 @@ import (
 // For POST requests, it extracts form values, prepares column values,
 // and updates the pen in the database using the ModifyPen function.
 func ModifyPen(w http.ResponseWriter, r *http.Request) {
+
+	userID := GetUserIDFromSession(r)
+	if userID == 0 {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		log.Println("Unauthorized access to modify")
+		return
+	}
+
 	if r.Method == http.MethodPost {
 		r.ParseForm()
 
@@ -24,7 +33,8 @@ func ModifyPen(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		columns := GetColumnNames("pens") // Fetch column names dynamically using handler function
+		// columns := GetColumnNames("pens") // Fetch column names dynamically using handler function
+		columns := GetColumnNames(userID, "pens")
 		// Remove "id" from column names
 		columns = columns[1:]
 
@@ -34,13 +44,14 @@ func ModifyPen(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// Update the pen using the ModifyPen function from handlers
-		err = UpdatePen(penID, convertInterfaceToStringSlice(columnValues))
+		// err = UpdatePen(penID, convertInterfaceToStringSlice(columnValues))
+		err = UpdatePen(userID, penID, convertInterfaceToStringSlice(columnValues))
 		if err != nil {
 			http.Error(w, "Error modifying pen", http.StatusInternalServerError)
 			return
 		}
 
-		http.Redirect(w, r, "/", http.StatusSeeOther)
+		http.Redirect(w, r, "/dashboard", http.StatusSeeOther)
 		return
 	}
 
@@ -52,13 +63,14 @@ func ModifyPen(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Fetch pen details based on ID
-	pen, err := GetPenByID(penID)
+	pen, err := GetPenByID(userID, penID)
 	if err != nil {
 		http.Error(w, "Error fetching pen details", http.StatusInternalServerError)
 		return
 	}
 
-	columns := GetColumnNames("pens") // Fetch column names dynamically using handler function
+	// columns := GetColumnNames("pens") // Fetch column names dynamically using handler function
+	columns := GetColumnNames(userID, "pens")
 
 	data := struct {
 		Columns []string
