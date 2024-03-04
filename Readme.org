@@ -10,22 +10,37 @@ This Fountain Pen inventory is called Flock and has been created with the help o
 
 ** Screenshots
 
-Some screenshots of the web interface:
+All the screenshots are available in the [[file:screenshots/][Folder with screenshots of Flock]].
 
 #+ATTR_ORG: :width 100
 #+ATTR_HTML: :width 100px
-#+CAPTION: Screenshot of listing of pens
-[[file:screenshots/listpens.png]]
+#+CAPTION: Homepage
+[[file:screenshots/homepage.png]]
+
+
+#+ATTR_ORG: :width 100
+#+ATTR_HTML: :width 100px
+#+CAPTION: Screenshot of listing of pens for a user
+[[file:screenshots/dashboard.png]]
+
+
+#+ATTR_ORG: :width 100
+#+ATTR_HTML: :width 100px
+#+CAPTION: Screenshot of registering as a new user
+[[file:screenshots/register.png]]
+
+
+#+ATTR_ORG: :width 100
+#+ATTR_HTML: :width 100px
+#+CAPTION: Screenshot of login page
+[[file:screenshots/login.png]]
+
 
 #+ATTR_ORG: :width 100
 #+ATTR_HTML: :width 100px
 #+CAPTION: Screenshot of adding a pen to the database
 [[file:./screenshots/addpen.png]]
 
-#+ATTR_ORG: :width 100
-#+ATTR_HTML: :width 100px
-#+CAPTION: Screenshot of importing a CSV file
-[[./screenshots/importcsv.png]]
 
 #+ATTR_ORG: :width 100
 #+ATTR_HTML: :width 100px
@@ -52,7 +67,6 @@ Currently using
 - Folder structure is as follows,
 
 #+begin_src
-.
 ├── LICENSE
 ├── Readme.org
 ├── database
@@ -61,12 +75,17 @@ Currently using
 ├── go.sum
 ├── handlers
 │   ├── add_pen.go
+│   ├── authenticate.go
 │   ├── database.go
 │   ├── delete_pen.go
 │   ├── helpers.go
 │   ├── import_export.go
+│   ├── index.go
 │   ├── list_pens.go
-│   └── modify.go
+│   ├── login.go
+│   ├── logout.go
+│   ├── modify.go
+│   └── register.go
 ├── includes
 │   ├── css
 │   │   └── styles.css
@@ -78,26 +97,37 @@ Currently using
 ├── screenshots
 │   ├── addpen.png
 │   ├── approveimport.png
-│   ├── importcsv.png
-│   └── listpens.png
+│   ├── dashboard.png
+│   ├── homepage.png
+│   ├── import.png
+│   ├── listpens.png
+│   ├── login.png
+│   ├── modify.png
+│   └── register.png
 └── templates
     ├── add.html
+    ├── dashboard.html
     ├── import.html
     ├── import_approve.html
     ├── import_preview.html
     ├── index.html
-    └── modify.html
+    ├── login.html
+    ├── modify.html
+    └── register.html
 #+end_src
 
 ** Go Modules required
 - Following modules are needed
 
 #+begin_src
-go get github.com/mattn/go-sqlite3
+github.com/gorilla/securecookie
+github.com/gorilla/sessions
+github.com/mattn/go-sqlite3
+golang.org/x/crypto v0.20.0
 #+end_src
 
 ** Database structure
-- The SQLite database is created as follows,
+- The SQLite database for the pens  created as follows (auto-created now),
 
 #+begin_src
 CREATE TABLE pens (
