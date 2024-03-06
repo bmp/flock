@@ -3,11 +3,11 @@
 package handlers
 
 import (
-    "html/template"
-    "log"
-    "net/http"
-    "strings"
-    "time"
+	"html/template"
+	"log"
+	"net/http"
+	"strings"
+	"time"
 )
 
 // AddPen handles the addition of a new pen to the database.
@@ -23,22 +23,25 @@ func AddPen(w http.ResponseWriter, r *http.Request) {
 		// Get userID from the session
 		userID := GetUserIDFromSession(r)
 
-		columns := GetColumnNames(userID, "pens") // Fetch column names dynamically using handler function
+		// Fetch dynamic column names based on user and table
+		columns := GetColumnNames(userID, "pens")
+
 		// Remove "id" from column names and values
 		columns = columns[1:]
 		columnValues := make([]interface{}, len(columns))
 
+		// Extract form values and trim spaces
 		for i, col := range columns {
 			columnValues[i] = strings.TrimSpace(r.FormValue(col))
 		}
 
 		// Insert the pen using the InsertPen function from handlers
-		// err := InsertPen(convertInterfaceToStringSlice(columnValues))
 		err := InsertPen(userID, convertInterfaceToStringSlice(columnValues))
 		if err != nil {
 			log.Fatal(err)
 		}
 
+		// Redirect to the dashboard after successful insertion
 		http.Redirect(w, r, "/dashboard", http.StatusSeeOther)
 		return
 	}
@@ -47,8 +50,10 @@ func AddPen(w http.ResponseWriter, r *http.Request) {
 	// Get userID from the session
 	userID := GetUserIDFromSession(r)
 
-	columns := GetColumnNames(userID, "pens") // Fetch column names dynamically using handler function
+	// Fetch dynamic column names based on user and table
+	columns := GetColumnNames(userID, "pens")
 
+	// Prepare data for template rendering
 	data := struct {
 		Columns     []string
 		CurrentYear int
@@ -59,7 +64,7 @@ func AddPen(w http.ResponseWriter, r *http.Request) {
 		Title:       Title, // Pass the Title function to the template
 	}
 
-	// tmpl := template.Must(template.ParseFiles("templates/add.html"))
+	// Parse and execute the template
 	tmpl := template.Must(template.New("add.html").Funcs(template.FuncMap{"Title": Title}).ParseFiles("templates/add.html"))
 	if err != nil {
 		log.Fatal("Error parsing add.html template:", err)

@@ -4,13 +4,13 @@ package handlers
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"log"
-	"strings"
-	"reflect"
-	"path/filepath"
 	"os"
-	"errors"
+	"path/filepath"
+	"reflect"
+	"strings"
 )
 
 // dbName is the name of the SQLite database file.
@@ -18,7 +18,7 @@ const dbName = "database.db"
 
 var db *sql.DB
 
-// CreateDatabaseIfNotExists checks if the database exists, and creates it if not.
+// CreateDatabaseIfNotExists checks if the database exists and creates it if not.
 // If the database already exists, it simply opens it.
 func CreateDatabaseIfNotExists() (*sql.DB, error) {
 	// Get the current working directory
@@ -69,7 +69,7 @@ func CreateDatabaseIfNotExists() (*sql.DB, error) {
 	return db, nil
 }
 
-// GetUserDBPath returns the path to the user's pens database file
+// GetUserDBPath returns the path to the user's pens database file.
 func GetUserDBPath(userID int64) string {
 	// Get the current working directory
 	currentDir, err := os.Getwd()
@@ -83,7 +83,7 @@ func GetUserDBPath(userID int64) string {
 	return userDBPath
 }
 
-// CreateOrUpdateUserDB creates or updates the user's pens database
+// CreateOrUpdateUserDB creates or updates the user's pens database.
 func CreateOrUpdateUserDB(userID int64) (*sql.DB, error) {
 	// Get the path to the user's pens database file
 	userDBPath := GetUserDBPath(userID)
@@ -131,7 +131,6 @@ func CreateOrUpdateUserDB(userID int64) (*sql.DB, error) {
 	return userDB, nil
 }
 
-
 // InitDB initializes the database connection for handlers.
 func InitDB(database *sql.DB) {
 	db = database
@@ -139,40 +138,40 @@ func InitDB(database *sql.DB) {
 
 // fetchDataFromDB fetches data from the database based on the provided query.
 func fetchDataFromDB(db *sql.DB, query string) ([]string, []map[string]interface{}, error) {
-    rows, err := db.Query(query)
-    if err != nil {
-        return nil, nil, err
-    }
-    defer rows.Close()
+	rows, err := db.Query(query)
+	if err != nil {
+		return nil, nil, err
+	}
+	defer rows.Close()
 
-    columns, _ := rows.Columns()
-    var pens []map[string]interface{}
+	columns, _ := rows.Columns()
+	var pens []map[string]interface{}
 
-    for rows.Next() {
-        values := make([]interface{}, len(columns))
-        scanArgs := make([]interface{}, len(columns))
-        for i := range values {
-            var v interface{}
-            scanArgs[i] = &v
-            values[i] = &v
-        }
-        if err := rows.Scan(scanArgs...); err != nil {
-            return nil, nil, err
-        }
+	for rows.Next() {
+		values := make([]interface{}, len(columns))
+		scanArgs := make([]interface{}, len(columns))
+		for i := range values {
+			var v interface{}
+			scanArgs[i] = &v
+			values[i] = &v
+		}
+		if err := rows.Scan(scanArgs...); err != nil {
+			return nil, nil, err
+		}
 
-        retrievedPen := make(map[string]interface{})
-        for i, colName := range columns {
-            if colName == "id" {
-                retrievedPen[colName] = reflect.ValueOf(values[i]).Elem().Interface().(int64) // Cast to int64
-            } else {
-                retrievedPen[colName] = reflect.ValueOf(values[i]).Elem().Interface()
-            }
-        }
+		retrievedPen := make(map[string]interface{})
+		for i, colName := range columns {
+			if colName == "id" {
+				retrievedPen[colName] = reflect.ValueOf(values[i]).Elem().Interface().(int64) // Cast to int64
+			} else {
+				retrievedPen[colName] = reflect.ValueOf(values[i]).Elem().Interface()
+			}
+		}
 
-        pens = append(pens, retrievedPen)
-    }
+		pens = append(pens, retrievedPen)
+	}
 
-    return columns, pens, nil
+	return columns, pens, nil
 }
 
 // GetColumnNames retrieves the column names of the specified table in the user's database.
@@ -204,35 +203,33 @@ func GetColumnNames(userID int64, tableName string) []string {
 	return columns
 }
 
-
-
 // SelectPens fetches all pens from the user's pens database.
 func SelectPens(userID int64) ([]map[string]interface{}, []string, error) {
-    // Get the path to the user's pens database file
-    userDBPath := GetUserDBPath(userID)
+	// Get the path to the user's pens database file
+	userDBPath := GetUserDBPath(userID)
 
-    // Open the user's pens database
-    userDB, err := sql.Open("sqlite3", userDBPath)
-    if err != nil {
-        return nil, nil, err
-    }
-    defer userDB.Close()
+	// Open the user's pens database
+	userDB, err := sql.Open("sqlite3", userDBPath)
+	if err != nil {
+		return nil, nil, err
+	}
+	defer userDB.Close()
 
-    // Construct the query to select all pens from the "pens" table
-    query := "SELECT * FROM pens"
+	// Construct the query to select all pens from the "pens" table
+	query := "SELECT * FROM pens"
 
-    // Fetch data from the user's pens database
-    columns, pens, err := fetchDataFromDB(userDB, query)
-    if err != nil {
-        return nil, nil, err
-    }
+	// Fetch data from the user's pens database
+	columns, pens, err := fetchDataFromDB(userDB, query)
+	if err != nil {
+		return nil, nil, err
+	}
 
-    return pens, columns, nil
+	return pens, columns, nil
 }
 
 // InsertPen inserts a new pen record into the database.
 func InsertPen(userID int64, values []string) error {
-	// Check if values has the necessary number of elements
+	// Check if values have the necessary number of elements
 	if len(values) < 1 {
 		return errors.New("insufficient values for InsertPen")
 	}
@@ -296,54 +293,53 @@ func UpdatePen(userID int64, id int64, values []string) error {
 
 // GetPenByID retrieves a pen's data by its ID for a specific user.
 func GetPenByID(userID int64, penID int64) (map[string]interface{}, error) {
-    // Get the path to the user's pens database file
-    userDBPath := GetUserDBPath(userID)
+	// Get the path to the user's pens database file
+	userDBPath := GetUserDBPath(userID)
 
-    // Open the user's pens database
-    userDB, err := sql.Open("sqlite3", userDBPath)
-    if err != nil {
-        return nil, err
-    }
-    defer userDB.Close()
+	// Open the user's pens database
+	userDB, err := sql.Open("sqlite3", userDBPath)
+	if err != nil {
+		return nil, err
+	}
+	defer userDB.Close()
 
-    query := fmt.Sprintf("SELECT * FROM pens WHERE id = %d", penID)
-    _, pens, err := fetchDataFromDB(userDB, query)
-    if err != nil {
-        return nil, err
-    }
-    if len(pens) == 0 {
-        return nil, fmt.Errorf("pen not found")
-    }
-    return pens[0], nil
+	query := fmt.Sprintf("SELECT * FROM pens WHERE id = %d", penID)
+	_, pens, err := fetchDataFromDB(userDB, query)
+	if err != nil {
+		return nil, err
+	}
+	if len(pens) == 0 {
+		return nil, fmt.Errorf("pen not found")
+	}
+	return pens[0], nil
 }
 
-// Convert []string to []interface{}
+// interfaceSlice converts []string to []interface{}.
 func interfaceSlice(slice []string) []interface{} {
-    interfaceSlice := make([]interface{}, len(slice))
-    for i, v := range slice {
-        interfaceSlice[i] = v
-    }
-    return interfaceSlice
+	interfaceSlice := make([]interface{}, len(slice))
+	for i, v := range slice {
+		interfaceSlice[i] = v
+	}
+	return interfaceSlice
 }
 
-// Convert []interface{} to []string
+// interfaceSliceToString converts []interface{} to []string.
 func interfaceSliceToString(slice []interface{}) []string {
-    stringSlice := make([]string, len(slice))
-    for i, v := range slice {
-        stringSlice[i] = fmt.Sprintf("%v", v)
-    }
-    return stringSlice
+	stringSlice := make([]string, len(slice))
+	for i, v := range slice {
+		stringSlice[i] = fmt.Sprintf("%v", v)
+	}
+	return stringSlice
 }
 
-// Convert []string to []interface{}
+// convertStringSliceToInterfaceSlice converts []string to []interface{}.
 func convertStringSliceToInterfaceSlice(slice []string) []interface{} {
-    interfaceSlice := make([]interface{}, len(slice))
-    for i, v := range slice {
-        interfaceSlice[i] = v
-    }
-    return interfaceSlice
+	interfaceSlice := make([]interface{}, len(slice))
+	for i, v := range slice {
+		interfaceSlice[i] = v
+	}
+	return interfaceSlice
 }
-
 
 // DeletePenByID deletes a pen from the database by its ID.
 func DeletePenByID(id int64) error {
@@ -359,28 +355,26 @@ func DeletePenByID(id int64) error {
 	return nil
 }
 
-
 // InsertUser inserts a new user record into the database.
 func InsertUser(username, firstName, middleName, lastName, email string, hashedPassword []byte, bio string) (int64, error) {
-    // Construct the INSERT query for users
-    insertUserQuery := `INSERT INTO users (username, first_name, middle_name, last_name, email, password, bio)
+	// Construct the INSERT query for users
+	insertUserQuery := `INSERT INTO users (username, first_name, middle_name, last_name, email, password, bio)
                         VALUES (?, ?, ?, ?, ?, ?, ?)`
 
-    // Execute the INSERT query
-    result, err := db.Exec(insertUserQuery, username, firstName, middleName, lastName, email, hashedPassword, bio)
-    if err != nil {
-        return 0, err
-    }
+	// Execute the INSERT query
+	result, err := db.Exec(insertUserQuery, username, firstName, middleName, lastName, email, hashedPassword, bio)
+	if err != nil {
+		return 0, err
+	}
 
-    // Get the last inserted ID
-    lastID, err := result.LastInsertId()
-    if err != nil {
-        return 0, err
-    }
+	// Get the last inserted ID
+	lastID, err := result.LastInsertId()
+	if err != nil {
+		return 0, err
+	}
 
-    return lastID, nil
+	return lastID, nil
 }
-
 
 // GetPasswordByUsername retrieves the hashed password from the database based on the username.
 func GetPasswordByUsername(username string) ([]byte, error) {
@@ -404,16 +398,15 @@ func GetPasswordByUsername(username string) ([]byte, error) {
 
 // convertInterfaceToStringSlice converts a slice of interfaces to a slice of strings.
 func convertInterfaceToStringSlice(slice []interface{}) []string {
-    stringSlice := make([]string, len(slice))
-    for i, v := range slice {
-        stringSlice[i] = fmt.Sprintf("%v", v)
-    }
-    return stringSlice
+	stringSlice := make([]string, len(slice))
+	for i, v := range slice {
+		stringSlice[i] = fmt.Sprintf("%v", v)
+	}
+	return stringSlice
 }
 
 // GetUserIDByUsername retrieves the user ID from the database based on the username.
 func GetUserIDByUsername(username string) (int64, error) {
-
 	// Get the current working directory
 	currentDir, err := os.Getwd()
 	if err != nil {

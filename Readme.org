@@ -6,6 +6,9 @@
 
 This Fountain Pen inventory is called Flock and has been created with the help of LLMs and is experimental.
 
+- The main repository for this application is on [[https://codeberg.org/bmp/flock][Codeberg]], please report all issues on [[https://codeberg.org/bmp/flock/issues][here]].
+- A mirror is maintained on [[https://github.com/bmp/flock][Github]] in order to deploy the site on [[https://www.koyeb.com/][Koyeb]].
+
 /Please note that this project uses Readme.org instead of Readme.md, some functionality might break on Codeberg when viewing the readme./
 
 ** Screenshots
