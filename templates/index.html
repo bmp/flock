@@ -1,54 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="/includes/css/styles.css">
-
-  <title>Fountain Pen Database</title>
-
-</head>
-<body>
-  <div class="container">
-    <header>
-      <h1>Flock: Personal Fountain Pen Database</h1>
-    </header>
-    <p>
-      Welcome to Flock, this is a personal fountain pen database system. Currently, it has the following features,
-      <ol type="1">
-        <li>
-          Maintain a list of fountain pens.
-        </li>
-        <li>
-          Export and import from CSV files, there is no lock-in whatsoever for you. You can download the CSV file and use any text editor of your choice to continue to maintain your inventory of fountain pens.
-        </li>
-        <li>
-          There are absolutely no social features in this inventory system and it shall remain so.
-        </li>
-        <li>
-          This software has very limited JavaScript (mainly for confirmation dialogues, date pickers, table sorters, and such).
-        </li>
-        <li>
-          You can login as a demo user to test the software with user as "demo" and password as "demo123".
-        </li>
-      </ol>
-    </p>
-
-    <div class="add-button-container">
-      <a href="/login" class="add-button">Login</a>
-      <a href="/register" class="add-button">Register</a>
-    </div>
-        <section class="accordion">
-      <input type="checkbox" name="collapse" id="handle1">
-      <h2 class="handle">
-        <label for="handle1">WARNING</label>
-      </h2>
-      <div class="content">
-        <p>&#x26A0; This is beta software, use at your own risk. &#x26A0;</p>
-        <p>This application has been created with the help of LLMs and is experimental. While the author acknowledges the issues around ethical software and copyright violations with respect to current models, this software is unlikely to have existed without LLMs.</p>
-        <p>Please do not use this software if you have ethical issues with LLMs. If you have alternate, ethically trained models that could help, please raise an issue in the <a href="https://codeberg.org/bmp/flock">repository</a>.</p>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/includes/css/styles.css">
+    <title>Fountain Pen Database</title>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>Flock: Personal Fountain Pen Database</h1>
+      </header>
+        <p>Welcome to Flock, this is a personal fountain pen database system. Currently, it has the following features,</p>
+        <ol type="1">
+          <li>
+            Maintain a list of your fountain pens.
+          </li>
+          <li>
+            No lock-in:
+            <ul>
+              <li>
+                Export the CSV file and use any text editor of your choice to continue to maintain your inventory of fountain pens.
+              </li>
+              <li>
+                Import from a CSV file, if you prefer a native spreadsheet editor.
+              </li>
+            </ul>
+          </li>
+          <li>
+            There are absolutely no social features in this inventory system and it shall remain so.
+          </li>
+          <li>
+            This software has very limited JavaScript (mainly for confirmation dialogues, date pickers, table sorters, and such).
+          </li>
+          <li>
+            You can login as a demo user to test the software with user as "demo" and password as "demo123".
+          </li>
+          <li>
+            This has not been optimised for a mobile screen.
+          </li>
+        </ol>
+      <div class="add-button-container">
+        <a href="/login" class="add-button">Login</a>
+        <a href="/register" class="add-button">Register</a>
       </div>
-    </section>
-  <script src="/includes/scripts/modifyRedirect.js"></script>
-</body>
+      <section class="accordion">
+        <input type="checkbox" name="collapse" id="handle1">
+        <h2 class="handle">
+          <label for="handle1">WARNING</label>
+        </h2>
+        <div class="content">
+          <p>&#x26A0; This is beta software, use at your own risk. &#x26A0;</p>
+          <p>This application has been created with the help of LLMs and is experimental. While the author acknowledges the issues around ethical software and copyright violations with respect to current models, this software is unlikely to have existed without LLMs.</p>
+          <p>Please do not use this software if you have ethical issues with LLMs. If you have alternate, ethically trained models that could help, please raise an issue in the <a href="https://codeberg.org/bmp/flock">repository</a>.</p>
+        </div>
+      </section>
+    </div>
+    <script src="/includes/scripts/modifyRedirect.js"></script>
+  </body>
 </html>
