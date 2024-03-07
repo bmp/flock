@@ -433,11 +433,11 @@ func PenExists(userID, penID int64) bool {
 	defer userDB.Close()
 
 	// Query to check if the pen with the given ID exists for the user
-	query := "SELECT COUNT(*) FROM pens WHERE id = ? AND user_id = ?"
+	query := "SELECT COUNT(*) FROM pens WHERE id = ?"
 	var count int
 	err = userDB.QueryRow(query, penID, userID).Scan(&count)
 	if err != nil {
-		// log.Printf("Error checking pen existence: %s", err)
+		// log.Printf("Error checking pen existence: %s for user %d", err, userID)
 		return false
 	}
 
