@@ -12,33 +12,50 @@
     <div class="container">
       <header>
         <h1><a href="/dashboard">Flock: Personal Fountain Pen Database</a></h1>
-      <h2>Import Pens from CSV</h2>
+        <h2>Import Pens from CSV</h2>
       </header>
       <div style="text-align:center;margin-top:25px;">
         <a href="/dashboard">Back to Main</a>
       </div>
-    <b>Please note:</b>
-    <ol type="1">
-      <li>
-        Please follow the format shown below for the CSV file,
-        <pre><code>id,name,maker,color,material,nib_size,nib_color,filling_system,trims,year,price,misc
-1,Jumbo,Guider,Black,Ebonite,Medium,Silver,Eyedropper,Chrome,2023-10-01,$80,Big heavy pen
-2,Sandalwood,Fosfor,Wood Grains,Wood encased Ebonite,Fine,Dualtone,Converter,Threaded,2022-08-05,$250,Classical pen</code></pre>
-      </li>
-      <li>
-        The first column is moot and the value will not be used.
-      </li>
-      <li>
-        The recommended way would be to download/export csv and then modify that file keeping the first row (i.e, the identifier row) intact.
-    </ol>
-    <div class="form-container">
-      <form method="POST" enctype="multipart/form-data">
-        <label for="csvFile">Choose a CSV file:</label>
-        <div class="add-button-container">
-          <input type="file" name="csvfile" id="csvfile" accept=".csv" style="text-align:center;margin-top:25px" class="add-button"> <button type="submit" class="add-button">Import CSV</button>
-        </div>
-      </form>
+      <b>Please note:</b>
+      <ol type="1">
+        <li>
+          Please follow the format shown below for the CSV file,
+          <pre><code>
+id,name,maker,color,material,nib_size,nib_color,filling_system,trims,year,price,misc
+1,Jumbo,Guider,Black,Ebonite,Medium,Silver,Eyedropper,Chrome,2023-10-01,80,Big heavy pen
+2,Sandalwood,Fosfor,Wood Grains,Wood encased Ebonite,Fine,Dualtone,Converter,Threaded,2022-08-05,250,Classical pen
+          </code></pre>
+        </li>
+        <li>
+          The first column is moot and the value will not be used.
+        </li>
+        <li>
+          The recommended way would be to download/export csv and then modify that file keeping the first row (i.e, the identifier row) intact.
+      </ol>
+      <div class="form-container">
+        <form method="POST" enctype="multipart/form-data">
+          <label for="csvFile">Choose a CSV file:</label>
+          <div class="add-button-container">
+            <input type="file" name="csvfile" id="csvfile" accept=".csv" style="text-align:center;margin-top:25px" class="add-button"> <button type="submit" class="add-button">Import CSV</button>
+          </div>
+        </form>
+      </div>
     </div>
-</div>
-</body>
+    {{ if .Error }}
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        alert("{{ .Error }}");
+    });
+    </script>
+    {{ end }}
+
+    {{ if .RedirectURL }}
+    <script>
+      setTimeout(function() {
+          window.location.href = "{{ .RedirectURL }}";
+      }, 5000);  // 5 seconds delay
+    </script>
+    {{ end }}
+  </body>
 </html>

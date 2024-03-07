@@ -1,44 +1,91 @@
 <!-- templates/add.html -->
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="/includes/css/styles.css">
-  <title>Flock: Personal Fountain Pen Database</title>
-</head>
-<body>
-  <div class="container">
-    <header>
-      <h1>Flock: Personal Fountain Pen Database</h1>
-      <h2>Add your pen</h2>
-    </header>
-    <div style="text-align:center;margin-top:25px;">
-      <a href="/">Back to Main</a>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/includes/css/styles.css">
+    <title>Flock: Personal Fountain Pen Database</title>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>Flock: Personal Fountain Pen Database</h1>
+        <h2>Add your pen</h2>
+      </header>
+      <div style="text-align:center;margin-top:25px;">
+        <a href="/">Back to Main</a>
+      </div>
+      <div class="form-container">
+        <form method="POST">
+          {{ range .Columns }}
+          {{ if ne . "id" }} <!-- Exclude the ID field -->
+          <label for="{{ . }}">{{ Title . }}</label>
+          {{ if eq . "year" }}
+          <input type="date" name="{{ . }}" id="{{ . }}" min="1900-01-01" max="{{ $.CurrentYear }}-12-31">
+          {{ else if eq . "nib_size" }}
+          <input list="nib_size_options" name="{{ . }}" id="{{ . }}">
+          <datalist id="nib_size_options">
+            <option value="UEF">UEF</option>
+            <option value="EF">EF</option>
+            <option value="F">F</option>
+            <option value="M">M</option>
+            <option value="B">B</option>
+            <option value="BB">BB</option>
+            <option value="BBB">BBB</option>
+            <option value="Music">Music</option>
+            <option value="Architect">Architect</option>
+            <option value="Italic">Italic</option>
+          </datalist>
+          {{ else if eq . "material" }}
+          <input list="material_options" name="{{ . }}" id="{{ . }}" >
+          <datalist id="material_options">
+            <option value="Wood">Wood</option>
+            <option value="Ebonite">Ebonite</option>
+            <option value="Resin">Resin</option>
+            <option value="Metal">Metal</option>
+            <option value="Lacquer">Lacquer</option>
+            <option value="Wood encased Ebonite">Wood encased Ebonite</option>
+            <option value="Delrin">Delrin</option>
+            <option value="Rubber">Rubber</option>
+            <option value="Acrylic">Acrylic</option>
+          </datalist>
+          {{ else if eq . "filling_system" }}
+          <input list="filling_system_options" name="{{ . }}" id="{{ . }}">
+          <datalist id="filling_system_options">
+            <option value="Cartridge">Cartridge</option>
+            <option value="Converter">Converter</option>
+            <option value="Eyedropper">Eyedropper</option>
+            <option value="Piston">Piston</option>
+            <option value="Sac/AeroMatic">Sac/AeroMatic</option>
+            <option value="Vacuum">Vacuum</option>
+          </datalist>
+          {{ else }}
+          <input type="text" name="{{ . }}" id="{{ . }}">
+          {{ end }}
+          {{ end }}
+          {{ end }}
+
+          <div class="add-button-container">
+            <button type="submit" class="add-button">Add Pen</button>
+          </div>
+
+        </form>
+      </div>
     </div>
-    <div class="form-container">
-      <form method="POST">
-        {{ range .Columns }}
-        {{ if ne . "id" }} <!-- Exclude the ID field -->
-        <label for="{{ . }}">{{ Title . }}</label>
-        {{ if eq . "year" }}
-        <input type="date" name="{{ . }}" id="{{ . }}" min="1900-01-01" max="{{ $.CurrentYear }}-12-31">
-        {{ else if eq . "nib_size" }}
-        <!-- ... (other input fields) -->
-        {{ else }}
-        <input type="text" name="{{ . }}" id="{{ . }}">
-        {{ end }}
-        {{ end }}
-        {{ end }}
+    {{ if .Error }}
+    <script>
+      alert("{{ .Error }}");
+    </script>
+    {{ end }}
 
-        <div class="add-button-container">
-          <button type="submit" class="add-button">Add Pen</button>
-        </div>
-
-      </form>
-    </div>
-  </div>
-
-  <script src="/includes/scripts/datepicker.js"></script>
-</body>
+    {{ if .RedirectURL }}
+    <script>
+      setTimeout(function() {
+          window.location.href = "{{ .RedirectURL }}";
+      }, 5000);  // 5 seconds delay
+    </script>
+    {{ end }}
+    <script src="/includes/scripts/datepicker.js"></script>
+  </body>
 </html>

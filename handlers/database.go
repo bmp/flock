@@ -11,12 +11,19 @@ import (
 	"path/filepath"
 	"reflect"
 	"strings"
+
+	// "golang.org/x/crypto/bcrypt"
 )
 
 // dbName is the name of the SQLite database file.
 const dbName = "database.db"
 
 var db *sql.DB
+
+// InitDB initializes the database connection for handlers.
+func InitDB(database *sql.DB) {
+	db = database
+}
 
 // CreateDatabaseIfNotExists checks if the database exists and creates it if not.
 // If the database already exists, it simply opens it.
@@ -129,11 +136,6 @@ func CreateOrUpdateUserDB(userID int64) (*sql.DB, error) {
 	}
 
 	return userDB, nil
-}
-
-// InitDB initializes the database connection for handlers.
-func InitDB(database *sql.DB) {
-	db = database
 }
 
 // fetchDataFromDB fetches data from the database based on the provided query.
@@ -341,33 +343,63 @@ func convertStringSliceToInterfaceSlice(slice []string) []interface{} {
 	return interfaceSlice
 }
 
+// PenExists checks if a pen with the given ID exists in the database for the given user.
+func PenExists(userID, penID int64) bool {
+	// Open the user's pens database
+	userDB, err := CreateOrUpdateUserDB(userID)
+	if err != nil {
+		// log.Printf("Error opening user database: %s", err)
+		return false
+	}
+	defer userDB.Close()
+
+	// Query to check if the pen with the given ID exists for the user
+	query := "SELECT COUNT(*) FROM pens WHERE id = ? AND user_id = ?"
+	var count int
+	err = userDB.QueryRow(query, penID, userID).Scan(&count)
+	if err != nil {
+		// log.Printf("Error checking pen existence: %s", err)
+		return false
+	}
+
+	// If count is greater than 0, the pen exists; otherwise, it doesn't
+	return count > 0
+}
+
 // DeletePenByID deletes a pen from the database by its ID.
 func DeletePenByID(userID int64, id int64) error {
-
 	// Open the user's pens database
 	userDB, err := CreateOrUpdateUserDB(userID)
 	if err != nil {
 		return err
 	}
+	defer userDB.Close()
 
 	// Construct the delete query
-	deleteQuery := fmt.Sprintf("DELETE FROM pens WHERE id = ?")
+	deleteQuery := "DELETE FROM pens WHERE id = ?"
 
 	// Execute the delete query
 	_, err = userDB.Exec(deleteQuery, id)
 	if err != nil {
+		log.Printf("Error deleting pen with ID %d: %s", id, err)
 		return err
 	}
-	defer userDB.Close()
 
 	return nil
 }
 
 // InsertUser inserts a new user record into the database.
 func InsertUser(username, firstName, middleName, lastName, email string, hashedPassword []byte, bio string) (int64, error) {
+	// Ensure the db variable is not nil
+	if db == nil {
+		return 0, errors.New("database connection not initialized")
+	}
+
 	// Construct the INSERT query for users
 	insertUserQuery := `INSERT INTO users (username, first_name, middle_name, last_name, email, password, bio)
                         VALUES (?, ?, ?, ?, ?, ?, ?)`
+
+	log.Printf("Insert called with %s", insertUserQuery)
 
 	// Execute the INSERT query
 	result, err := db.Exec(insertUserQuery, username, firstName, middleName, lastName, email, hashedPassword, bio)

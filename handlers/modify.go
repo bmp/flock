@@ -18,8 +18,7 @@ func ModifyPen(w http.ResponseWriter, r *http.Request) {
 
 	userID := GetUserIDFromSession(r)
 	if userID == 0 {
-		http.Error(w, "Unauthorized", http.StatusUnauthorized)
-		// log.Println("Unauthorized access to modify")
+		RedirectWithError(w, r, "/login", "Please login to modify your pen")
 		return
 	}
 
@@ -29,7 +28,7 @@ func ModifyPen(w http.ResponseWriter, r *http.Request) {
 		// Get the pen ID from the URL parameter
 		penID, err := strconv.ParseInt(r.URL.Path[len("/modify/"):], 10, 64)
 		if err != nil {
-			http.Error(w, "Invalid pen ID", http.StatusBadRequest)
+			RedirectWithError(w, r, "/dashboard", "Invalid pen ID")
 			return
 		}
 
@@ -47,7 +46,7 @@ func ModifyPen(w http.ResponseWriter, r *http.Request) {
 		// err = UpdatePen(penID, convertInterfaceToStringSlice(columnValues))
 		err = UpdatePen(userID, penID, convertInterfaceToStringSlice(columnValues))
 		if err != nil {
-			http.Error(w, "Error modifying pen", http.StatusInternalServerError)
+			RedirectWithError(w, r, "/dashboard", "Error modifying pen")
 			return
 		}
 
@@ -58,14 +57,14 @@ func ModifyPen(w http.ResponseWriter, r *http.Request) {
 	// Get the pen ID from the URL parameter
 	penID, err := strconv.ParseInt(r.URL.Path[len("/modify/"):], 10, 64)
 	if err != nil {
-		http.Error(w, "Invalid pen ID", http.StatusBadRequest)
+		RedirectWithError(w, r, "/dashboard", "Invalid pen ID")
 		return
 	}
 
 	// Fetch pen details based on ID
 	pen, err := GetPenByID(userID, penID)
 	if err != nil {
-		http.Error(w, "Error fetching pen details", http.StatusInternalServerError)
+		RedirectWithError(w, r, "/dashboard", "Doesn't look like the pen exists anymore")
 		return
 	}
 

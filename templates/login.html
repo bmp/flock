@@ -24,10 +24,23 @@
         <input type="password" id="password" name="password" required>
         <div class="add-button-container">
           <button type="submit" class="add-button">Login</button>
-          </div>
+        </div>
       </form>
     </div>
   </div>
+  {{ if .Error }}
+  <script>
+    alert("{{ .Error }}");
+  </script>
+  {{ end }}
+
+  {{ if .RedirectURL }}
+  <script>
+    setTimeout(function() {
+        window.location.href = "{{ .RedirectURL }}";
+    }, 5000);  // 5 seconds delay
+  </script>
+  {{ end }}
   <script src="/includes/scripts/modifyRedirect.js"></script>
 </body>
 </html>

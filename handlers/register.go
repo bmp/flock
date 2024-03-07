@@ -5,7 +5,7 @@ package handlers
 import (
 	// "fmt"
 	// "html/template"
-  // "log"
+	// "log"
 	"math/rand"
 	"net/http"
 	"strings"
@@ -16,11 +16,20 @@ import (
 
 // HandleRegister handles user registration
 func Register(w http.ResponseWriter, r *http.Request) {
+	// Define data at the beginning
+	var data struct {
+		CaptchaQuestion string
+		CaptchaAnswer   string
+		Error           string
+		RedirectURL     string
+	}
+
 	if r.Method == http.MethodPost {
 		// Parse the form data
 		err := r.ParseForm()
 		if err != nil {
-			http.Error(w, "Error parsing form data", http.StatusInternalServerError)
+			data.Error = "Error parsing form data"
+			renderTemplate(w, "register", data)
 			return
 		}
 
@@ -36,7 +45,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		// Hash the password before storing it
 		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 		if err != nil {
-			http.Error(w, "Error hashing password", http.StatusInternalServerError)
+			RedirectWithError(w, r, "/register", "Error hashing password")
 			return
 		}
 
@@ -44,42 +53,44 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		userID, err := InsertUser(username, firstName, middleName, lastName, email, hashedPassword, bio)
 		if err != nil {
 			if strings.Contains(err.Error(), "UNIQUE constraint failed") {
-				// log.Println("Username or email already exists")
-				http.Error(w, "Username or email already exists", http.StatusBadRequest)
+				RedirectWithError(w, r, "/register", "Username or email already exists")
 				return
 			}
-			// log.Println("Error inserting user:", err)
-			http.Error(w, "Error inserting user into the database", http.StatusInternalServerError)
+			RedirectWithError(w, r, "/register", "Error inserting user into the database")
 			return
 		}
 
 		// Create or update the user's pens database
 		_, err = CreateOrUpdateUserDB(userID)
 		if err != nil {
-			http.Error(w, "Error creating or updating user's pens database", http.StatusInternalServerError)
+			RedirectWithError(w, r, "/register", "Error creating or updating user's pens database")
 			return
 		}
 
 		// Redirect to the login page or dashboard
 		SetUserIDInSession(w, r, userID) // Set the user session
 		http.Redirect(w, r, "/dashboard", http.StatusSeeOther)
-				return
-
+		return
 	}
 
 	// Generate a random CAPTCHA question
 	question, answer := generateRandomCaptcha()
 
-	// Render the registration form with CAPTCHA question
-	data := struct {
-		CaptchaQuestion string
-		CaptchaAnswer string
-	}{
-		CaptchaQuestion: question,
-		CaptchaAnswer: answer,
+	// Assign values to data
+	data.CaptchaQuestion = question
+	data.CaptchaAnswer = answer
+
+
+	// Check if there's any error message or redirection URL in the query parameters
+	queryParams := r.URL.Query()
+	if len(queryParams["error"]) > 0 {
+		data.Error = queryParams["error"][0]
+	}
+	if len(queryParams["redirect"]) > 0 {
+		data.RedirectURL = queryParams["redirect"][0]
 	}
 
-	// Use renderTemplate when parsing templates
+	// Render the registration form with CAPTCHA question and potential error
 	renderTemplate(w, "register", data)
 }
 
@@ -90,7 +101,7 @@ func generateRandomCaptcha() (question, answer string) {
 		"What is the purpose of the breather hole on a nib?":                                                           "regulation",
 		"What is a common material for vintage pen bodies?":                                                            "ebonite",
 		"What is the common name for the liquid used by fountain pen?":                                                 "ink",
-		"Are demonstrators transparent or opaque?":                                                                     "opaque",
+		"Are demonstrators transparent or opaque?":                                                                     "transparent",
 		"What is the common and cheap nib tipping material?":                                                           "iridium",
 		"What is the name for a filling system which has an empty barrel?":                                             "eyedropper",
 		"Which is more water-resistant ink: pigment or dye?":                                                           "pigment",

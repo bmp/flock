@@ -51,8 +51,20 @@
             {{ end }}
         </table>
   </div>
-
   <script src="/includes/scripts/sort.js"></script>
   <script src="/includes/scripts/modifyRedirect.js"></script>
+  {{ if .Error }}
+  <script>
+    alert("{{ .Error }}");
+  </script>
+  {{ end }}
+
+  {{ if .RedirectURL }}
+  <script>
+    setTimeout(function() {
+        window.location.href = "{{ .RedirectURL }}";
+    }, 5000);  // 5 seconds delay
+  </script>
+  {{ end }}
 </body>
 </html>

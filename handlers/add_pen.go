@@ -17,11 +17,17 @@ import (
 // and inserts the pen into the database using the InsertPen function.
 func AddPen(w http.ResponseWriter, r *http.Request) {
 	var err error // Declare err here so that it's accessible in the entire function
+
+	// Get the user ID from the session
+	userID := GetUserIDFromSession(r)
+	if userID == 0 {
+		// Redirect to the login page with an error message if the user is not logged in
+		RedirectWithError(w, r, "/login", "Please login")
+		return
+	}
+
 	if r.Method == http.MethodPost {
 		r.ParseForm()
-
-		// Get userID from the session
-		userID := GetUserIDFromSession(r)
 
 		// Fetch dynamic column names based on user and table
 		columns := GetColumnNames(userID, "pens")
@@ -47,9 +53,6 @@ func AddPen(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// For GET requests, render the form
-	// Get userID from the session
-	userID := GetUserIDFromSession(r)
-
 	// Fetch dynamic column names based on user and table
 	columns := GetColumnNames(userID, "pens")
 
@@ -63,6 +66,8 @@ func AddPen(w http.ResponseWriter, r *http.Request) {
 		CurrentYear: time.Now().Year(),
 		Title:       Title, // Pass the Title function to the template
 	}
+
+	// log.Printf("Data for adding pen is %=v", data)
 
 	// Parse and execute the template
 	tmpl := template.Must(template.New("add.html").Funcs(template.FuncMap{"Title": Title}).ParseFiles("templates/add.html"))

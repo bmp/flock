@@ -59,6 +59,20 @@
         </form>
 
       </div>
+      {{ if .Error }}
+      <script>
+        alert("{{ .Error }}");
+      </script>
+      {{ end }}
+
+      {{ if .RedirectURL }}
+      <script>
+        setTimeout(function() {
+            window.location.href = "{{ .RedirectURL }}";
+        }, 5000);  // 5 seconds delay
+      </script>
+      {{ end }}
     </div>
+
   </body>
 </html>

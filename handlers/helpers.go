@@ -8,6 +8,7 @@ import (
 	"html/template"
 	"fmt"
 	// "path/filepath"
+	// "log"
 )
 
 var templates = make(map[string]*template.Template)
@@ -44,6 +45,10 @@ func GetTemplate(name string) (*template.Template, bool) {
 
 // renderTemplate renders an HTML template.
 func renderTemplate(w http.ResponseWriter, templateName string, data interface{}) {
+
+	// Log the data
+	// log.Printf("Rendering template %s with data: %+v", templateName, data)
+
 	// Parse the template files
 	tmplFiles := fmt.Sprintf("templates/%s.html", templateName)
 	tmpl, err := template.ParseFiles(tmplFiles)
@@ -58,4 +63,11 @@ func renderTemplate(w http.ResponseWriter, templateName string, data interface{}
 		http.Error(w, "Error executing template: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
+}
+
+// RedirectWithError redirects to the specified URL with an error message.
+func RedirectWithError(w http.ResponseWriter, r *http.Request, targetURL, errorMessage string) {
+	redirectURL := fmt.Sprintf("%s?error=%s", targetURL, errorMessage)
+	// log.Printf("errorMessage is %s", errorMessage)
+	http.Redirect(w, r, redirectURL, http.StatusSeeOther)
 }

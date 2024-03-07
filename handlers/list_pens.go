@@ -20,31 +20,50 @@ import (
 //   - w (http.ResponseWriter): The HTTP response writer to write the response to.
 //   - r (*http.Request): The HTTP request containing details of the request.
 func ListPens(w http.ResponseWriter, r *http.Request) {
-    // Get the user ID from the session (you need to implement this part)
-    userID := GetUserIDFromSession(r)
-    if userID == 0 {
-        http.Error(w, "Unauthorized", http.StatusUnauthorized)
-        return
-    }
 
-    // Fetch pens and columns from the user's pens database
-    pens, columns, err := SelectPens(userID)
-    if err != nil {
-        http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-			  // log.Println("Error fetching data:", err)
-        return
-    }
+	// Define data at the beginning
+	var data struct {
+		Pens    []map[string]interface{}
+		Columns []string
+		Error           string
+		RedirectURL     string
+	}
 
-    // Prepare data for template rendering
-    data := struct {
-        Pens    []map[string]interface{}
-        Columns []string
-    }{
-        Pens:    pens,
-        Columns: columns,
-    }
+	// Get the user ID from the session (you need to implement this part)
+	userID := GetUserIDFromSession(r)
+	if userID == 0 {
+		// http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		RedirectWithError(w, r, "/login", "Please login")
+		return
+	}
 
-    // Parse and execute the template
-    tmpl := template.Must(template.New("dashboard.html").Funcs(template.FuncMap{"Add": Add}).ParseFiles("templates/dashboard.html"))
-    tmpl.Execute(w, data)
+	// Fetch pens and columns from the user's pens database
+	pens, columns, err := SelectPens(userID)
+	if err != nil {
+		// http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		// log.Println("Error fetching data:", err)
+		RedirectWithError(w, r, "/login", "User tables don't exist try again")
+		return
+	}
+
+	// Prepare data for template rendering
+	data.Pens = pens
+	data.Columns = columns
+
+	// Check if there's any error message or redirection URL in the query parameters
+	queryParams := r.URL.Query()
+	if len(queryParams["error"]) > 0 {
+		data.Error = queryParams["error"][0]
+		// log.Printf("adding %s to data", data.Error)
+	}
+	if len(queryParams["redirect"]) > 0 {
+		data.RedirectURL = queryParams["redirect"][0]
+		// log.Printf("adding %s to data", data.RedirectURL)
+	}
+
+	// log.Printf("Calling with %+v", data)
+
+	// Parse and execute the template
+	tmpl := template.Must(template.New("dashboard.html").Funcs(template.FuncMap{"Add": Add}).ParseFiles("templates/dashboard.html"))
+	tmpl.Execute(w, data)
 }

@@ -5,13 +5,10 @@ import (
 	"encoding/csv"
 	"encoding/json"
 	"fmt"
-	// "log"
 	"net/http"
-	//"strings"
-	"time"
 	"html/template"
+	"time"
 )
-
 
 // ExportCSV exports the data from the "pens" table in CSV format.
 // It retrieves the data using SelectPens, generates a CSV file with the data,
@@ -20,15 +17,13 @@ func ExportCSV(w http.ResponseWriter, r *http.Request) {
 	// Get the user ID from the session (you need to implement this part)
 	userID := GetUserIDFromSession(r)
 	if userID == 0 {
-		http.Error(w, "Unauthorized", http.StatusUnauthorized)
-		// log.Println("Unauthorized access to ExportCSV")
+		RedirectWithError(w, r, "/login", "Please login to export your data")
 		return
 	}
 
-	pens, columns, err := SelectPens(userID)  // Pass the userID parameter here
+	pens, columns, err := SelectPens(userID) // Pass the userID parameter here
 	if err != nil {
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-		// log.Println("Error fetching data:", err)
+		RedirectWithError(w, r, "/dashboard", "Some issue with getting your pens, ply try later")
 		return
 	}
 
@@ -44,8 +39,7 @@ func ExportCSV(w http.ResponseWriter, r *http.Request) {
 
 	// Write CSV header
 	if err := csvWriter.Write(columns); err != nil {
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-		// log.Println("Error writing CSV header:", err)
+		RedirectWithError(w, r, "/dashboard", "Unable to create a CSV, please try again later")
 		return
 	}
 
@@ -56,8 +50,7 @@ func ExportCSV(w http.ResponseWriter, r *http.Request) {
 			row[i] = fmt.Sprintf("%v", pen[col])
 		}
 		if err := csvWriter.Write(row); err != nil {
-			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-			// log.Println("Error writing CSV row:", err)
+			RedirectWithError(w, r, "/dashboard", "Unable to create a CSV, please try again later")
 			return
 		}
 	}
@@ -65,12 +58,10 @@ func ExportCSV(w http.ResponseWriter, r *http.Request) {
 	csvWriter.Flush()
 
 	if err := csvWriter.Error(); err != nil {
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-		// log.Println("Error flushing CSV writer:", err)
+		RedirectWithError(w, r, "/dashboard", "Unable to create a CSV, please try again later")
 		return
 	}
 }
-
 
 // ImportCSV handles the import of data from a CSV file.
 // It supports both GET and POST requests. For GET requests, it renders the import form.
@@ -78,8 +69,7 @@ func ExportCSV(w http.ResponseWriter, r *http.Request) {
 func ImportCSV(w http.ResponseWriter, r *http.Request) {
 	userID := GetUserIDFromSession(r)
 	if userID == 0 {
-		http.Error(w, "Unauthorized", http.StatusUnauthorized)
-		// log.Println("Unauthorized access to ImportCSV")
+		RedirectWithError(w, r, "/login", "Please login to attempt to import pens")
 		return
 	}
 
@@ -88,27 +78,20 @@ func ImportCSV(w http.ResponseWriter, r *http.Request) {
 
 		file, _, err := r.FormFile("csvfile")
 		if err != nil {
-			http.Error(w, "Bad Request", http.StatusBadRequest)
-			// log.Println("Error retrieving uploaded file:", err)
+			RedirectWithError(w, r, "/dashboard", "Unable to parse CSV file, please check format")
 			return
 		}
 		defer file.Close()
 
-		// log.Println("CSV file retrieved successfully.")
-
 		reader := csv.NewReader(file)
 		rows, err := reader.ReadAll()
 		if err != nil {
-			http.Error(w, "Bad Request", http.StatusBadRequest)
-			// log.Println("Error reading CSV:", err)
+			RedirectWithError(w, r, "/dashboard", "Unable to identify columns, please check format")
 			return
 		}
 
 		columns := rows[0] // Assume the first row contains column headers
 		rows = rows[1:]    // Exclude the header row
-
-		//log.Printf("Imported columns: %v\n", columns)
-		//log.Printf("Imported rows: %v\n", rows)
 
 		data := struct {
 			Columns []string
@@ -119,42 +102,31 @@ func ImportCSV(w http.ResponseWriter, r *http.Request) {
 		}
 
 		csvDataJSON, err := json.Marshal(data.Rows)
-
-
-
 		if err != nil {
-			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-			// log.Println("Error marshaling CSV data:", err)
+			RedirectWithError(w, r, "/dashboard", "Please check the data in your CSV and format it as needed for this application")
 			return
 		}
 
-		// Print the value of csvDataJSON
-		//fmt.Println("csvDataJSON:", string(csvDataJSON))
-
 		columnsJSON, err := json.Marshal(data.Columns)
 		if err != nil {
-			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-			// log.Println("Error marshaling columns data:", err)
+			RedirectWithError(w, r, "/dashboard", "Some data rows seem to be corrupt")
 			return
 		}
 
 		tmpl := template.Must(template.ParseFiles("templates/import_preview.html"))
 		tmpl.Execute(w, struct {
-			CsvData   template.JS
-			Columns   template.JS
+			CsvData template.JS
+			Columns template.JS
 		}{
-			CsvData:   template.JS(csvDataJSON),
-			Columns:   template.JS(columnsJSON),
+			CsvData: template.JS(csvDataJSON),
+			Columns: template.JS(columnsJSON),
 		})
 		return
-
 	}
 
 	tmpl := template.Must(template.ParseFiles("templates/import.html"))
 	tmpl.Execute(w, nil)
 }
-
-
 
 // ImportApprove handles the approval of imported data.
 // It processes the approved data and inserts it into the database.
@@ -162,8 +134,7 @@ func ImportCSV(w http.ResponseWriter, r *http.Request) {
 func ImportApprove(w http.ResponseWriter, r *http.Request) {
 	userID := GetUserIDFromSession(r)
 	if userID == 0 {
-		http.Error(w, "Unauthorized", http.StatusUnauthorized)
-		// log.Println("Unauthorized access to ImportApprove")
+		RedirectWithError(w, r, "/login", "Please login to approve the import request")
 		return
 	}
 
@@ -171,15 +142,13 @@ func ImportApprove(w http.ResponseWriter, r *http.Request) {
 		csvData := r.FormValue("csvData")
 		var rows [][]string
 		if err := json.Unmarshal([]byte(csvData), &rows); err != nil {
-			http.Error(w, "Bad Request", http.StatusBadRequest)
-			// log.Println("Error unmarshaling CSV data:", err)
+			RedirectWithError(w, r, "/dashboard", "There seems to be an issue with the rows")
 			return
 		}
 
 		tx, err := db.Begin()
 		if err != nil {
-			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-			// log.Println("Error beginning transaction:", err)
+			RedirectWithError(w, r, "/dashboard", "Unable to get to your database, please try later")
 			return
 		}
 
@@ -187,16 +156,16 @@ func ImportApprove(w http.ResponseWriter, r *http.Request) {
 			// Start from index 1 to exclude the id column
 			if err := InsertPen(userID, row[1:]); err != nil {
 				tx.Rollback()
-				http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-				// log.Println("Error inserting pen:", err)
+				errorMessage := fmt.Sprintf("Unable to add pen: %v. Error: %v", row, err)
+				RedirectWithError(w, r, "/dashboard", errorMessage)
 				return
 			}
 		}
 
+
 		err = tx.Commit()
 		if err != nil {
-			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-			// log.Println("Error committing transaction:", err)
+			RedirectWithError(w, r, "/dashboard", "Unable to commit changes to your database")
 			return
 		}
 
