@@ -4,7 +4,7 @@ package handlers
 
 import (
 	"html/template"
-	"log"
+	// "log"
 	"net/http"
 	//"time"
 )
@@ -31,7 +31,7 @@ func ListPens(w http.ResponseWriter, r *http.Request) {
     pens, columns, err := SelectPens(userID)
     if err != nil {
         http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-        log.Println("Error fetching data:", err)
+			  // log.Println("Error fetching data:", err)
         return
     }
 

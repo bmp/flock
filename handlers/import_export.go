@@ -5,7 +5,7 @@ import (
 	"encoding/csv"
 	"encoding/json"
 	"fmt"
-	"log"
+	// "log"
 	"net/http"
 	//"strings"
 	"time"
@@ -21,14 +21,14 @@ func ExportCSV(w http.ResponseWriter, r *http.Request) {
 	userID := GetUserIDFromSession(r)
 	if userID == 0 {
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
-		log.Println("Unauthorized access to ExportCSV")
+		// log.Println("Unauthorized access to ExportCSV")
 		return
 	}
 
 	pens, columns, err := SelectPens(userID)  // Pass the userID parameter here
 	if err != nil {
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-		log.Println("Error fetching data:", err)
+		// log.Println("Error fetching data:", err)
 		return
 	}
 
@@ -45,7 +45,7 @@ func ExportCSV(w http.ResponseWriter, r *http.Request) {
 	// Write CSV header
 	if err := csvWriter.Write(columns); err != nil {
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-		log.Println("Error writing CSV header:", err)
+		// log.Println("Error writing CSV header:", err)
 		return
 	}
 
@@ -57,7 +57,7 @@ func ExportCSV(w http.ResponseWriter, r *http.Request) {
 		}
 		if err := csvWriter.Write(row); err != nil {
 			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-			log.Println("Error writing CSV row:", err)
+			// log.Println("Error writing CSV row:", err)
 			return
 		}
 	}
@@ -66,7 +66,7 @@ func ExportCSV(w http.ResponseWriter, r *http.Request) {
 
 	if err := csvWriter.Error(); err != nil {
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-		log.Println("Error flushing CSV writer:", err)
+		// log.Println("Error flushing CSV writer:", err)
 		return
 	}
 }
@@ -79,7 +79,7 @@ func ImportCSV(w http.ResponseWriter, r *http.Request) {
 	userID := GetUserIDFromSession(r)
 	if userID == 0 {
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
-		log.Println("Unauthorized access to ImportCSV")
+		// log.Println("Unauthorized access to ImportCSV")
 		return
 	}
 
@@ -89,18 +89,18 @@ func ImportCSV(w http.ResponseWriter, r *http.Request) {
 		file, _, err := r.FormFile("csvfile")
 		if err != nil {
 			http.Error(w, "Bad Request", http.StatusBadRequest)
-			log.Println("Error retrieving uploaded file:", err)
+			// log.Println("Error retrieving uploaded file:", err)
 			return
 		}
 		defer file.Close()
 
-		log.Println("CSV file retrieved successfully.")
+		// log.Println("CSV file retrieved successfully.")
 
 		reader := csv.NewReader(file)
 		rows, err := reader.ReadAll()
 		if err != nil {
 			http.Error(w, "Bad Request", http.StatusBadRequest)
-			log.Println("Error reading CSV:", err)
+			// log.Println("Error reading CSV:", err)
 			return
 		}
 
@@ -124,7 +124,7 @@ func ImportCSV(w http.ResponseWriter, r *http.Request) {
 
 		if err != nil {
 			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-			log.Println("Error marshaling CSV data:", err)
+			// log.Println("Error marshaling CSV data:", err)
 			return
 		}
 
@@ -134,7 +134,7 @@ func ImportCSV(w http.ResponseWriter, r *http.Request) {
 		columnsJSON, err := json.Marshal(data.Columns)
 		if err != nil {
 			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-			log.Println("Error marshaling columns data:", err)
+			// log.Println("Error marshaling columns data:", err)
 			return
 		}
 
@@ -163,7 +163,7 @@ func ImportApprove(w http.ResponseWriter, r *http.Request) {
 	userID := GetUserIDFromSession(r)
 	if userID == 0 {
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
-		log.Println("Unauthorized access to ImportApprove")
+		// log.Println("Unauthorized access to ImportApprove")
 		return
 	}
 
@@ -172,14 +172,14 @@ func ImportApprove(w http.ResponseWriter, r *http.Request) {
 		var rows [][]string
 		if err := json.Unmarshal([]byte(csvData), &rows); err != nil {
 			http.Error(w, "Bad Request", http.StatusBadRequest)
-			log.Println("Error unmarshaling CSV data:", err)
+			// log.Println("Error unmarshaling CSV data:", err)
 			return
 		}
 
 		tx, err := db.Begin()
 		if err != nil {
 			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-			log.Println("Error beginning transaction:", err)
+			// log.Println("Error beginning transaction:", err)
 			return
 		}
 
@@ -188,7 +188,7 @@ func ImportApprove(w http.ResponseWriter, r *http.Request) {
 			if err := InsertPen(userID, row[1:]); err != nil {
 				tx.Rollback()
 				http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-				log.Println("Error inserting pen:", err)
+				// log.Println("Error inserting pen:", err)
 				return
 			}
 		}
@@ -196,7 +196,7 @@ func ImportApprove(w http.ResponseWriter, r *http.Request) {
 		err = tx.Commit()
 		if err != nil {
 			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-			log.Println("Error committing transaction:", err)
+			// log.Println("Error committing transaction:", err)
 			return
 		}
 

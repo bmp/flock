@@ -33,7 +33,7 @@ func CreateDatabaseIfNotExists() (*sql.DB, error) {
 	// Check if the main database file already exists
 	if _, err := os.Stat(dbPath); os.IsNotExist(err) {
 		// If the main database file doesn't exist, create it
-		log.Println("Creating main database...")
+		// log.Println("Creating main database...")
 
 		db, err := sql.Open("sqlite3", dbPath)
 		if err != nil {
@@ -60,7 +60,7 @@ func CreateDatabaseIfNotExists() (*sql.DB, error) {
 	}
 
 	// If the main database file already exists, simply open it
-	log.Println("Opening existing main database...")
+	// log.Println("Opening existing main database...")
 	db, err := sql.Open("sqlite3", dbPath)
 	if err != nil {
 		return nil, err
@@ -122,7 +122,7 @@ func CreateOrUpdateUserDB(userID int64) (*sql.DB, error) {
 	}
 
 	// If the user's pens database file already exists, simply open it
-	log.Printf("Opening existing user's pens database for user with ID %d...\n", userID)
+	// log.Printf("Opening existing user's pens database for user with ID %d...\n", userID)
 	userDB, err := sql.Open("sqlite3", userDBPath)
 	if err != nil {
 		return nil, err
@@ -342,15 +342,23 @@ func convertStringSliceToInterfaceSlice(slice []string) []interface{} {
 }
 
 // DeletePenByID deletes a pen from the database by its ID.
-func DeletePenByID(id int64) error {
+func DeletePenByID(userID int64, id int64) error {
+
+	// Open the user's pens database
+	userDB, err := CreateOrUpdateUserDB(userID)
+	if err != nil {
+		return err
+	}
+
 	// Construct the delete query
 	deleteQuery := fmt.Sprintf("DELETE FROM pens WHERE id = ?")
 
 	// Execute the delete query
-	_, err := db.Exec(deleteQuery, id)
+	_, err = userDB.Exec(deleteQuery, id)
 	if err != nil {
 		return err
 	}
+	defer userDB.Close()
 
 	return nil
 }

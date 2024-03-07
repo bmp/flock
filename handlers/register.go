@@ -5,7 +5,7 @@ package handlers
 import (
 	// "fmt"
 	// "html/template"
-	"log"
+  // "log"
 	"math/rand"
 	"net/http"
 	"strings"
@@ -44,11 +44,11 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		userID, err := InsertUser(username, firstName, middleName, lastName, email, hashedPassword, bio)
 		if err != nil {
 			if strings.Contains(err.Error(), "UNIQUE constraint failed") {
-				log.Println("Username or email already exists")
+				// log.Println("Username or email already exists")
 				http.Error(w, "Username or email already exists", http.StatusBadRequest)
 				return
 			}
-			log.Println("Error inserting user:", err)
+			// log.Println("Error inserting user:", err)
 			http.Error(w, "Error inserting user into the database", http.StatusInternalServerError)
 			return
 		}
@@ -122,7 +122,7 @@ func generateRandomCaptcha() (question, answer string) {
 	defer func() {
 		if err := recover(); err != nil {
 			// Handle the panic and log the error
-			log.Println("Panic in generateRandomCaptcha:", err)
+			// log.Println("Panic in generateRandomCaptcha:", err)
 		}
 	}()
 

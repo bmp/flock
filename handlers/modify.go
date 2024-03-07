@@ -6,7 +6,7 @@ import (
 	"html/template"
 	"net/http"
 	"strconv"
-	"log"
+	// "log"
 )
 
 // ModifyPen handles the modification of a pen in the database.
@@ -19,7 +19,7 @@ func ModifyPen(w http.ResponseWriter, r *http.Request) {
 	userID := GetUserIDFromSession(r)
 	if userID == 0 {
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
-		log.Println("Unauthorized access to modify")
+		// log.Println("Unauthorized access to modify")
 		return
 	}
 
