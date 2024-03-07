@@ -22,3 +22,6 @@ go.work
 
 # Ignore files in database folder
 database/*
+
+# But keep the folder
+!database/.gitkeep
