@@ -12,7 +12,7 @@ import (
 	"reflect"
 	"strings"
 
-	// "golang.org/x/crypto/bcrypt"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // dbName is the name of the SQLite database file.
@@ -40,8 +40,6 @@ func CreateDatabaseIfNotExists() (*sql.DB, error) {
 	// Check if the main database file already exists
 	if _, err := os.Stat(dbPath); os.IsNotExist(err) {
 		// If the main database file doesn't exist, create it
-		// log.Println("Creating main database...")
-
 		db, err := sql.Open("sqlite3", dbPath)
 		if err != nil {
 			return nil, err
@@ -63,17 +61,98 @@ func CreateDatabaseIfNotExists() (*sql.DB, error) {
 			return nil, err
 		}
 
-		return db, nil
+		// Insert demo user
+		demoUsername := "demo"
+		demoPassword := "demo123"
+		demoFirstName := "Demo"
+		demoLastName := "User"
+		demoEmail := "demo@example.com"
+		demoBio := "This is a demo user."
+
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(demoPassword), bcrypt.DefaultCost)
+		if err != nil {
+			db.Close()
+			return nil, err
+		}
+
+		_, err = db.Exec(`INSERT INTO users (username, first_name, last_name, email, password, bio)
+			VALUES (?, ?, ?, ?, ?, ?)`, demoUsername, demoFirstName, demoLastName, demoEmail, hashedPassword, demoBio)
+		if err != nil {
+			db.Close()
+			return nil, err
+		}
+
+		// Close the database connection after creating the demo user
+		db.Close()
 	}
 
-	// If the main database file already exists, simply open it
-	// log.Println("Opening existing main database...")
+	// Open the main database file
 	db, err := sql.Open("sqlite3", dbPath)
 	if err != nil {
 		return nil, err
 	}
 
+	// If the demo user was just created, also create the pens table for the demo user
+	demoUserID, err := GetUserIDByUsername("demo")
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = CreateOrUpdateUserDB(demoUserID)
+	if err != nil {
+		db.Close()
+		return nil, err
+	}
+
+	// Insert demo pens
+	demoPens := [][]string{
+		{"LAMY Safari", "LAMY", "Charcoal", "Plastic", "M", "Black", "Converter", "Silver", "2001-01-11", "30.00", "Smooth writer"},
+		{"Pilot Metropolitan", "Pilot", "Silver", "Metal", "F", "Silver", "Cartridge", "Black", "2002-05-23", "18.00", "Classic design"},
+		{"Pelikan Souverän M800", "Pelikan", "Green", "Resin", "F", "Gold", "Piston", "Gold", "2005-08-17", "600.00", "Timeless design"},
+		{"Sailor Pro Gear", "Sailor", "Black", "Resin", "M", "Gold", "Converter", "Gold", "2008-11-30", "250.00", "Japanese craftsmanship"},
+		{"Parker Duofold Centennial", "Parker", "Black", "Resin", "F", "Gold", "Converter", "Gold", "2010-03-02", "500.00", "Classic elegance"},
+		{"Faber-Castell E-Motion", "Faber-Castell", "Pearwood", "Wood", "M", "Steel", "Converter", "Chrome", "2012-07-14", "150.00", "Unique wooden design"},
+		{"Platinum 3776 Century", "Platinum", "Bourgogne", "Resin", "M", "Gold", "Converter", "Gold", "2014-10-05", "200.00", "Japanese precision"},
+		{"Sheaffer Prelude", "Sheaffer", "Gunmetal", "Metal", "F", "Steel", "Converter", "Chrome", "2016-02-18", "80.00", "Sleek and modern"},
+		{"Kaweco Sport", "Kaweco", "Classic Sport", "Plastic", "F", "Steel", "Cartridge", "Gold", "2018-04-21", "25.00", "Compact pocket pen"},
+		{"Ranga Model 4", "Ranga", "Ebonite", "Ebonite", "B", "Steel", "Eyedropper", "Gold", "2020-09-10", "50.00", "Handmade Indian pen"},
+		{"Deccan Advocate", "Deccan", "Red", "Acrylic", "M", "Steel", "Converter", "Chrome", "2021-12-03", "70.00", "Indian craftsmanship"},
+		{"Guider Acrylic", "Guider", "Blue", "Acrylic", "F", "Steel", "Eyedropper", "Silver", "2022-06-14", "60.00", "Handmade Indian pen"},
+		{"Ratnam Supreme", "Ratnam", "Green", "Ebonite", "UEF", "Gold", "Eyedropper", "Gold", "2003-09-27", "120.00", "Vintage Indian pen"},
+		{"Bhramam Mystique", "Bhramam", "Purple", "Acrylic", "BBB", "Steel", "Converter", "Chrome", "2007-12-19", "90.00", "Artisan Indian pen"},
+		{"Nakaya Piccolo Cigar", "Nakaya", "Kuro-Tamenuri", "Urushi", "EF", "Gold", "Converter", "Gold", "2011-04-07", "800.00", "Japanese Urushi masterpiece"},
+		{"Hakase Fountain Pen", "Hakase", "Brown", "Ebonite", "Music", "Gold", "Piston", "Gold", "2015-08-29", "2000.00", "Custom handmade Japanese pen"},
+		{"Conid Bulkfiller Regular", "Conid", "Black", "Resin", "Architect", "Gold", "Bulkfiller", "Gold", "2019-11-12", "700.00", "Innovative filling mechanism"},
+		{"BCHR Waterman Ideal", "Waterman", "Black", "Hard Rubber", "Italic", "Gold", "Eyedropper", "Gold", "2023-01-15", "250.00", "Vintage BCHR pen"},
+		{"Fosfor Islander", "Fosfor", "Blue", "Ebonite", "F", "Gold", "Vacuum", "Gold", "2004-06-09", "250.00", "Custom handmade pen with Vacuum system"},
+	}
+
+	for _, pen := range demoPens {
+		err := insertDemoPen(demoUserID, pen)
+		if err != nil {
+			db.Close()
+			return nil, err
+		}
+	}
+
 	return db, nil
+}
+
+// insertDemoPen inserts a demo pen record into the user's database.
+func insertDemoPen(userID int64, values []string) error {
+	db, err := CreateOrUpdateUserDB(userID)
+	if err != nil {
+		return err
+	}
+	defer db.Close()
+
+	// Insert demo pen into the "pens" table
+	err = InsertPen(userID, values)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // GetUserDBPath returns the path to the user's pens database file.
@@ -399,7 +478,7 @@ func InsertUser(username, firstName, middleName, lastName, email string, hashedP
 	insertUserQuery := `INSERT INTO users (username, first_name, middle_name, last_name, email, password, bio)
                         VALUES (?, ?, ?, ?, ?, ?, ?)`
 
-	log.Printf("Insert called with %s", insertUserQuery)
+	// log.Printf("Insert called with %s", insertUserQuery)
 
 	// Execute the INSERT query
 	result, err := db.Exec(insertUserQuery, username, firstName, middleName, lastName, email, hashedPassword, bio)
